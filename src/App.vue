@@ -6,22 +6,22 @@
         <div class="columns">
             <div class="column is-2 has-text-centered">
                 <h4 class="subtitle is-4 playfair">Round</h4>
-                <h3 class="title is-3 has-text-primary">{{gameRound}}</h3>
+                <h3 class="title is-4 has-text-primary">{{gameRound}}</h3>
             </div>
             <div class="column is-2 has-text-centered">
                 <h4 class="subtitle is-4 playfair">Next Draw</h4>
-                <h3 class="title is-3 has-text-primary">{{timeUntilDraw()}} secs</h3>
+                <h3 class="title is-4 has-text-primary">{{timeUntilDraw()}} secs</h3>
             </div>
             <div class="column has-text-centered">
                 <h1 class="title is-1 playfair">Bingo Morph</h1>
             </div>
             <div class="column is-2 has-text-centered">
                 <h4 class="subtitle is-4 playfair">Cards Sold</h4>
-                <h3 class="title is-3 has-text-primary">{{currentTokenId - gameTokenFloor}}</h3>
+                <h3 class="title is-4 has-text-primary">{{currentTokenId - gameTokenFloor}}</h3>
             </div>
             <div class="column is-2 has-text-centered">
                 <h4 class="subtitle is-4 playfair">Prize</h4>
-                <h3 class="title is-3 has-text-primary">{{prizePool}} ETH</h3>
+                <h3 class="title is-4 has-text-primary">{{prizePool}} ETH</h3>
             </div>
         </div>
         <div class="tabs is-centered">
