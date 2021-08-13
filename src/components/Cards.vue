@@ -50,8 +50,9 @@
       refresh: Number
     },
     mounted: async function() {
-        this.gameRound = parseInt(await this.contract.getCurrentGame.call());
-        this.gameFloor = parseInt(await this.contract.gameFloors.call(this.gameRound));
+        let response = await this.contract.getCurrent.call();
+        this.gameRound = parseInt(response.game);
+        this.gameFloor = parseInt(await this.contract.gameFloor.call());
         let cards = await this.contract.getCardsByOwner.call(this.account);
         cards.reverse();
         for(let i=0; i<cards.length; i++) {
@@ -63,11 +64,6 @@
         }
     },
     methods: {
-      mint: async function() {
-        console.log('minting', this.contract);
-        const response = await this.contract.mintCard(this.mintAmount, {value: this.mintAmount * .01 * 1e18, from: this.account});
-        console.log('mint response', response);
-      }
     }
   }
 </script>

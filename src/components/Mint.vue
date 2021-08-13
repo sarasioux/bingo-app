@@ -62,8 +62,8 @@
         myWeedBalance: 0,
         mintAmount: '',
         pricePerCard: '',
-        weedPerCard: '',
-        maxCardPurchase: '',
+        weedPerCard: 4000,
+        maxCardPurchase: 10,
         maxCardsPerGame: '',
         gameTokenFloor: '',
         currentTokenId: '',
@@ -81,24 +81,22 @@
     methods: {
       mint: async function() {
         if(this.currencyChoice === 'ETH') {
-          await this.contract.mintCardEth(this.mintAmount, {value: this.mintAmount * this.pricePerCard * 1e18, from: this.account});
+          await this.contract.mintCard(this.mintAmount, {value: this.mintAmount * this.pricePerCard * 1e18, from: this.account});
           this.$emit('minted');
         } else {
           let totalWeed = new BN(this.weedPerCard * this.mintAmount * 1e18);
-          console.log('total weed', totalWeed);
           await this.weedContract.approve(this.contract.address, totalWeed);
-          await this.contract.mintCardWeed(this.mintAmount, {from: this.account});
+          await this.contract.mintCard(this.mintAmount, {from: this.account});
           this.$emit('minted');
         }
       },
       loadData: async function() {
-        this.gameRound = parseInt(await this.contract.getCurrentGame.call());
+        let response = await this.contract.getCurrent.call();
+        this.gameRound = parseInt(response.game);
+        this.currentTokenId = parseInt(response.token);
         this.pricePerCard = parseInt(await this.contract.pricePerCard.call()) / 1e18;
-        this.maxCardPurchase = parseInt(await this.contract.maxCardPurchase.call());
-        this.maxCardsPerGame = parseInt(await this.contract.maxCardsPerGame.call());
-        this.gameTokenFloor = parseInt(await this.contract.gameFloors.call(this.gameRound));
-        this.currentTokenId = parseInt(await this.contract.getCurrentToken.call());
-        this.weedPerCard = parseInt(await this.contract.weedPerCard.call()) / 1e18;
+        this.maxCardsPerGame = parseInt(await this.contract.maxCards.call());
+        this.gameTokenFloor = parseInt(await this.contract.gameFloor.call());
 
         this.myEthBalance = Math.round(await this.$web3.eth.getBalance(this.account) / 1e16) / 1e2;
         this.myWeedBalance = parseInt(await this.weedContract.balanceOf(this.account)) / 1e18;

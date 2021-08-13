@@ -1,35 +1,42 @@
 <template>
-    <a @click="connectWeb3" class="button" v-if="!isConnected">Connect</a>
-    <br />
+    <Welcome
+        v-if="!isConnected"
+        v-on:connect="connectWeb3"
+    />
 
     <div class="bingo" v-if="isReady">
-        <div class="columns">
-            <div class="column is-2 has-text-centered">
-                <h4 class="subtitle is-4 playfair">Round</h4>
-                <h3 class="title is-4 has-text-primary">{{gameRound}}</h3>
-            </div>
-            <div class="column is-2 has-text-centered">
-                <h4 class="subtitle is-4 playfair">Next Draw</h4>
-                <h3 class="title is-4 has-text-primary">{{timeUntilDraw()}} secs</h3>
-            </div>
-            <div class="column has-text-centered">
-                <h1 class="title is-1 playfair">Bingo Morph</h1>
-            </div>
-            <div class="column is-2 has-text-centered">
-                <h4 class="subtitle is-4 playfair">Cards Sold</h4>
-                <h3 class="title is-4 has-text-primary">{{currentTokenId - gameTokenFloor}}</h3>
-            </div>
-            <div class="column is-2 has-text-centered">
-                <h4 class="subtitle is-4 playfair">Prize</h4>
-                <h3 class="title is-4 has-text-primary">{{prizePool}} ETH</h3>
+        <div class="section">
+            <div class="columns">
+                <div class="column is-2 has-text-centered">
+                    <h4 class="subtitle is-4 playfair">Round</h4>
+                    <h3 class="title is-4 has-text-primary">{{gameRound}}</h3>
+                </div>
+                <div class="column is-2 has-text-centered">
+                    <h4 class="subtitle is-4 playfair">Next Draw</h4>
+                    <h3 class="title is-4 has-text-primary" v-if="timeUntilNextDraw > 0">{{timeUntilNextDraw}} secs</h3>
+                    <h3 class="title is-4 has-text-primary" v-if="timeUntilNextDraw < 0">Pending</h3>
+                </div>
+                <div class="column has-text-centered">
+                    <h1 class="title is-1 playfair">Bingo Morph</h1>
+                </div>
+                <div class="column is-2 has-text-centered">
+                    <h4 class="subtitle is-4 playfair">Cards Sold</h4>
+                    <h3 class="title is-4 has-text-primary">{{currentTokenId - gameTokenFloor}}</h3>
+                </div>
+                <div class="column is-2 has-text-centered">
+                    <h4 class="subtitle is-4 playfair">Prize</h4>
+                    <h3 class="title is-4 has-text-primary">{{prizePool}} ETH</h3>
+                </div>
             </div>
         </div>
+
         <div class="tabs is-centered">
             <ul class="playfair">
                 <li class="is-active"><a>Play Bingo</a></li>
                 <li><a>About the Game</a></li>
             </ul>
         </div>
+
         <div class="section balls-section has-background-dark has-text-centered">
             <Balls
                 v-if="isReady"
@@ -52,7 +59,7 @@
             <p class="help">Contract Address: <strong>{{contract.address}}</strong></p>
         </div>
 
-        <div class="has-text-centered">
+        <div class="section has-text-centered">
             <Cards
                     v-if="isReady"
                     :account="account"
@@ -61,15 +68,13 @@
             />
         </div>
 
-        <div class="section">
-            <Admin
-                    v-if="isReady"
-                    :account="account"
-                    :contract="contract"
-                    :refresh="refresh"
-            />
-        </div>
-
+        <Admin
+                v-if="isReady"
+                :account="account"
+                :contract="contract"
+                :weedContract="weedContract"
+                :refresh="refresh"
+        />
     </div>
 
 </template>
@@ -84,6 +89,7 @@ import Mint from './components/Mint'
 import Cards from './components/Cards'
 import Balls from './components/Balls'
 import Admin from './components/Admin'
+import Welcome from './components/Welcome'
 
 export default {
   name: 'App',
@@ -104,10 +110,12 @@ export default {
       ballDrawTime: '',
       gameTokenFloor: '',
       currentTokenId: '',
+
+      timeUntilNextDraw: 0
     }
   },
   components: {
-    Mint, Cards, Balls, Admin
+    Mint, Cards, Balls, Admin, Welcome
   },
   mounted: function() {
     //this.fillBox();
@@ -171,12 +179,14 @@ export default {
       this.loadData();
     },
     loadData: async function() {
-      this.gameRound = parseInt(await this.contract.getCurrentGame.call());
+      let response = await this.contract.getCurrent.call();
+      this.gameRound = parseInt(response.game);
+      this.currentTokenId = parseInt(response.token);
       this.prizePool = parseInt(await this.contract.prizePool.call()) / 1e18;
       this.lastBallTime = parseInt(await this.contract.lastBallTime.call());
       this.ballDrawTime = parseInt(await this.contract.ballDrawTime.call());
-      this.gameTokenFloor = parseInt(await this.contract.gameFloors.call(this.gameRound));
-      this.currentTokenId = parseInt(await this.contract.getCurrentToken.call());
+      this.gameTokenFloor = parseInt(await this.contract.gameFloor.call());
+      this.timeUntilDraw();
       this.isReady = true;
     },
     refreshCards: function() {
@@ -184,7 +194,8 @@ export default {
       this.loadData();
     },
     timeUntilDraw: function() {
-      return Math.round(((this.lastBallTime*1000 + this.ballDrawTime*1000) - Date.now()) / 1000);
+      this.timeUntilNextDraw = Math.round(((this.lastBallTime*1000 + this.ballDrawTime*1000) - Date.now()) / 1000);
+      setTimeout(this.timeUntilDraw, 1000);
     }
   }
 }

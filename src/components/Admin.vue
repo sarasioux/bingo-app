@@ -82,12 +82,6 @@
                             <button class="button is-fullwidth is-primary" @click="saveSettings">Save</button>
                         </p>
                     </div>
-                    <div class="panel-block">
-                        <p class="control is-expanded">
-                            <button class="button" @click="requestBall">Request New Ball</button>
-                        </p>
-                    </div>
-
                 </nav>
             </div>
         </div>
@@ -106,6 +100,7 @@
         minCardsPerGame: '',
         maxCardsPerGame: '',
         pricePerCard: '',
+        prizeSplit: 2,
         forceBall: 0,
         ballRequest: '',
       }
@@ -123,23 +118,13 @@
       loadData: async function() {
         this.baseUri = await this.contract.baseUri.call();
         this.ballDrawTime = await this.contract.ballDrawTime.call();
-        this.minCardsPerGame = await this.contract.minCardsPerGame.call();
-        this.maxCardsPerGame = await this.contract.maxCardsPerGame.call();
+        this.minCardsPerGame = await this.contract.minCards.call();
+        this.maxCardsPerGame = await this.contract.maxCards.call();
         this.pricePerCard = await this.contract.pricePerCard.call() / 1e18;
       },
       saveSettings: async function() {
-        await this.contract.contractSettings(this.baseUri, this.ballDrawTime, this.minCardsPerGame, this.maxCardsPerGame, String(this.pricePerCard * 1e18));
+        await this.contract.contractSettings(this.baseUri, this.ballDrawTime, this.minCardsPerGame, this.maxCardsPerGame, String(this.pricePerCard * 1e18), this.prizeSplit, this.account);
         this.loadData();
-      },
-      requestBall: async function() {
-        await this.contract.requestRandomBall();
-        this.ballRequest = await this.contract.ballRequest.call();
-        this.fulfillRandom();
-
-      },
-      fulfillRandom: async function() {
-        let randomness = Math.round(Math.random() * 10e10);
-        await this.contract.fulfillRandomBall(this.ballRequest, randomness);
       },
     }
   }

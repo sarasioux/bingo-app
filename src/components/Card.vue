@@ -1,11 +1,11 @@
 <template>
-    <div class="box">
+    <div class="box" :class="{'has-background-primary':isWinner}">
         <h2 class="title is-4 playfair">Card #{{id}}</h2>
         <figure class="image is-square" v-if="image">
             <img :src="image">
         </figure>
-        <a @click="validateCard" v-if="isCurrent">Check Winner</a><br />
-        <a @click="claimBingo" v-if="isCurrent">Claim Bingo</a><br />
+        <br />
+        <a @click="claimBingo" v-if="isCurrent" class="button is-fullwidth is-primary">Claim Bingo</a><br />
     </div>
 </template>
 
@@ -21,6 +21,7 @@
         tokenJson: {},
         image: '',
         isCurrent: false,
+        isWinner: false,
       }
     },
     watch: {
@@ -35,22 +36,20 @@
     },
     methods: {
       loadCard: async function() {
-        this.gameRound = parseInt(await this.contract.getCurrentGame.call());
-        this.gameFloor = parseInt(await this.contract.gameFloors.call(this.gameRound));
+        let response = await this.contract.getCurrent.call();
+        this.gameRound = parseInt(response.game);
+        this.gameFloor = parseInt(await this.contract.gameFloor.call());
         this.randomness = parseInt(await this.contract.cardRandomness(this.id));
 
         if(this.id > this.gameFloor) {
           this.isCurrent = true;
+          this.isWinner = await this.contract.validateCard(this.id);
         }
 
         this.tokenUrl = await this.contract.tokenURI(this.id);
-        let response = await fetch(this.tokenUrl);
+        response = await fetch(this.tokenUrl);
         this.tokenJson = await response.json();
         this.image = this.tokenJson.image;
-      },
-      validateCard: async function() {
-        const response = await this.contract.validateWinner(this.id);
-        console.log('validation response', response);
       },
       claimBingo: async function() {
         const response = await this.contract.claimBingo(this.id);
