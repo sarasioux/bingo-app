@@ -19,6 +19,7 @@
       return {
         balls: [],
         chosenBalls: [],
+        gameRound: ''
       }
     },
     components: {
@@ -32,18 +33,31 @@
     props: {
       account: String,
       contract: Object,
-      refresh: Number
+      refresh: Number,
+      graphClient: Object
     },
     mounted: async function() {
         this.loadBalls();
     },
     methods: {
       loadBalls: async function() {
-        this.balls = [];
-        for(let i=1; i<76; i++) {
-          let ball = await this.contract.Balls(i);
-          if(ball) {
-            this.balls.push(i);
+        let response = await this.contract.getCurrent.call();
+        this.gameRound = parseInt(response.game);
+
+        const query = `
+            query {
+                game(id: ${this.gameRound}) {
+                    balls {
+                      ball
+                    }
+                }
+            }
+        `;
+        response = await this.graphClient.query(query).toPromise();
+        if(response.data.game.balls.length > 0) {
+          this.balls = [];
+          for(let i=0; i<response.data.game.balls.length; i++) {
+            this.balls.push(parseInt(response.data.game.balls[i].ball));
           }
         }
       },

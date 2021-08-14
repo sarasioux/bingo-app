@@ -43,6 +43,7 @@
                 :account="account"
                 :contract="contract"
                 :refresh="refresh"
+                :graphClient="graphClient"
             />
         </div>
 
@@ -91,6 +92,8 @@ import Balls from './components/Balls'
 import Admin from './components/Admin'
 import Welcome from './components/Welcome'
 
+import { createClient } from 'urql';
+
 export default {
   name: 'App',
   data: function() {
@@ -111,7 +114,9 @@ export default {
       gameTokenFloor: '',
       currentTokenId: '',
 
-      timeUntilNextDraw: 0
+      timeUntilNextDraw: 0,
+
+      graphClient: {}
     }
   },
   components: {
@@ -188,6 +193,8 @@ export default {
       this.gameTokenFloor = parseInt(await this.contract.gameFloor.call());
       this.timeUntilDraw();
       this.isReady = true;
+
+      this.queryGraph();
     },
     refreshCards: function() {
       this.refresh = Date.now();
@@ -196,6 +203,27 @@ export default {
     timeUntilDraw: function() {
       this.timeUntilNextDraw = Math.round(((this.lastBallTime*1000 + this.ballDrawTime*1000) - Date.now()) / 1000);
       setTimeout(this.timeUntilDraw, 1000);
+    },
+    queryGraph: async function() {
+      const APIURL = "https://api.studio.thegraph.com/query/4841/bingo/v0.0.2";
+      this.graphClient = createClient({
+        url: APIURL
+      });
+
+    /*
+      const tokensQuery = `
+        query {
+            token(id: 1) {
+                id
+                game {
+                    id
+                }
+            }
+        }
+        `;
+      const data = await client.query(tokensQuery).toPromise();
+      console.log('graph data', data);
+      */
     }
   }
 }
