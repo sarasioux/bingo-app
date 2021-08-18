@@ -1,5 +1,5 @@
 <template>
-    <div class="box" :class="{'has-background-primary':isWinner}">
+    <div class="box" :class="{'has-background-warning':isWinner}">
         <h2 class="title is-4 playfair">Card #{{id}}</h2>
         <figure class="image is-square" v-if="image">
             <img :src="image">

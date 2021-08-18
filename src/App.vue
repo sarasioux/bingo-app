@@ -17,7 +17,7 @@
                     <h3 class="title is-4 has-text-primary" v-if="timeUntilNextDraw < 0">Pending</h3>
                 </div>
                 <div class="column has-text-centered">
-                    <h1 class="title is-1 playfair">Bingo Morph</h1>
+                    <h1 class="title is-1 playfair">Bingo Swap</h1>
                 </div>
                 <div class="column is-2 has-text-centered">
                     <h4 class="subtitle is-4 playfair">Cards Sold</h4>
