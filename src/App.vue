@@ -1,6 +1,6 @@
 <template>
     <div class="bingo">
-        <div class="section has-background-primary">
+        <div class="section has-background-danger has-background-logo">
             <div class="columns">
                 <div class="column is-3">
                     <div class="columns is-mobile" v-if="isReady">
@@ -22,7 +22,7 @@
                     <h1 class="title has-text-centered has-text-white is-4">Welcome to the world's first blockchain based bingo.</h1>
                 </div>
                 <div class="column has-text-centered">
-                    <img src="/logo3.png" />
+
                 </div>
                 <div class="column is-3">
                     <div class="columns is-mobile" v-if="isReady">
@@ -286,5 +286,11 @@ export default {
     .playfair {
         font-family: "Playfair Display";
         font-size: 1.4em;
+    }
+
+    .has-background-logo {
+        background: url('../public/logo4.jpg') center center no-repeat;
+        background-size: 800px 350px;
+        height: 350px;
     }
 </style>
