@@ -22,7 +22,7 @@
                     <h1 class="title has-text-centered has-text-white is-4">Welcome to the world's first blockchain based bingo.</h1>
                 </div>
                 <div class="column has-text-centered">
-
+                    <img src="../public/logo3.png" />
                 </div>
                 <div class="column is-3">
                     <div class="columns is-mobile" v-if="isReady">
@@ -288,9 +288,4 @@ export default {
         font-size: 1.4em;
     }
 
-    .has-background-logo {
-        background: url('../public/logo4.jpg') center center no-repeat;
-        background-size: 800px 350px;
-        height: 350px;
-    }
 </style>
