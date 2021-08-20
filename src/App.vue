@@ -192,7 +192,7 @@ export default {
         }
       } catch (error) {
         // User denied account access
-        console.log('did not receive accts', error);
+        alert('Please enable web3 to continue.');
       }
     },
     initContracts: async function() {
