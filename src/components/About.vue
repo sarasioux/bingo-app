@@ -73,4 +73,7 @@
 </script>
 
 <style scoped>
+    li {
+        margin-bottom: 1em;
+    }
 </style>
