@@ -13,6 +13,7 @@
     "bignumber.js": "^9.0.1",
     "bulma": "^0.9.3",
     "core-js": "^3.6.5",
+    "graphql": "^15.5.1",
     "node-sass": "^6.0.1",
     "react": "^17.0.2",
     "urql": "^2.0.4",
