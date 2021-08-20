@@ -1,42 +1,41 @@
 <template>
     <div class="bingo">
-        <div class="section">
+        <div class="section has-background-primary">
             <div class="columns">
-                <div class="column is-4">
+                <div class="column is-3">
                     <div class="columns is-mobile" v-if="isReady">
                         <div class="column is-6 has-text-centered">
                             <div class="box">
-                                <h4 class="subtitle is-5">Game Round</h4>
-                                <h3 class="title is-3 has-text-primary">{{gameRound}}</h3>
+                                <h4 class="subtitle is-6">Round</h4>
+                                <h3 class="title is-5 has-text-primary">{{gameRound}}</h3>
                             </div>
                         </div>
                         <div class="column is-6 has-text-centered">
                             <div class="box">
-                                <h4 class="subtitle is-5">Next Draw</h4>
-                                <h3 class="title is-3 has-text-primary" v-if="timeUntilNextDraw > 0">{{timeUntilNextDraw}} secs</h3>
-                                <h3 class="title is-3 has-text-primary" v-if="timeUntilNextDraw < 0">Pending</h3>
+                                <h4 class="subtitle is-6">Next Draw</h4>
+                                <h3 class="title is-5 has-text-primary" v-if="timeUntilNextDraw > 0">{{timeUntilNextDraw}} secs</h3>
+                                <h3 class="title is-5 has-text-primary" v-if="timeUntilNextDraw < 0">Pending</h3>
                             </div>
                         </div>
                     </div>
-                    <br /><br /><br />
-                    <h1 class="title has-text-centered has-text-dark is-3">Welcome to the world's first blockchain based bingo.</h1>
+                    <br />
+                    <h1 class="title has-text-centered has-text-white is-4">Welcome to the world's first blockchain based bingo.</h1>
                 </div>
-
                 <div class="column has-text-centered">
-                    <img src="/logo.png" />
+                    <img src="/logo3.png" />
                 </div>
-                <div class="column is-4">
+                <div class="column is-3">
                     <div class="columns is-mobile" v-if="isReady">
                         <div class="column is-6 has-text-centered">
                             <div class="box">
-                                <h4 class="subtitle is-5">Cards Sold</h4>
-                                <h3 class="title is-3 has-text-primary">{{currentTokenId - gameTokenFloor}}</h3>
+                                <h4 class="subtitle is-6">Cards Sold</h4>
+                                <h3 class="title is-5 has-text-primary">{{currentTokenId - gameTokenFloor}}</h3>
                             </div>
                         </div>
                         <div class="column is-6 has-text-centered">
                             <div class="box">
-                                <h4 class="subtitle is-5">Prize Pool</h4>
-                                <h3 class="title is-3 has-text-primary">{{prizePool}} ETH</h3>
+                                <h4 class="subtitle is-6">Prize Pool</h4>
+                                <h3 class="title is-5 has-text-primary">{{prizePool}} ETH</h3>
                             </div>
                         </div>
                     </div>
@@ -44,13 +43,13 @@
                     <div class="box has-text-centered" v-if="gameRound === 3">
                         <div class="media">
                             <div class="media-left">
-                                <figure class="image is-128x128">
+                                <figure class="image is-96x96">
                                     <img src="./assets/images/rock.png" alt="Stoners Rock">
                                 </figure>
                             </div>
                             <div class="media-content">
-                                <h4 class="subtitle is-5">NFT Prize</h4>
-                                <p class="title is-3 has-text-primary">Stoners Rock</p>
+                                <h4 class="subtitle is-6">NFT Prize</h4>
+                                <p class="title is-5 has-text-primary">Stoners Rock</p>
                                 <p class="subtitle is-6"><a href="https://twitter.com/mystoners">@mystoners</a></p>
                             </div>
                         </div>
@@ -67,7 +66,7 @@
             />
         </div>
 
-        <div class="section balls-section has-background-primary has-text-centered" v-if="isReady">
+        <div class="section balls-section has-background-black has-text-centered" v-if="isReady">
             <Balls
                 :account="account"
                 :contract="contract"
