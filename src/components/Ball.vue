@@ -28,8 +28,9 @@
         display: inline-block;
         padding: 1.5em;
         border-radius: 100px;
-        width: 98px;
+        width: 96px;
         margin: 0.2em 0.5em;
         font-family: "Source Code Pro";
+
     }
 </style>

@@ -1,6 +1,6 @@
 <template>
     <div class="cards" v-if="cards.length > 0">
-        <h1 class="title is-3 playfair">My Cards</h1>
+        <h1 class="title is-3">My Cards</h1>
         <div class="columns is-multiline">
             <div class="column is-3" v-for="card in cards" :key="card">
                 <Card

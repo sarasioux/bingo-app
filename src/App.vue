@@ -1,45 +1,74 @@
 <template>
-    <Welcome
-        v-if="!isConnected"
-        v-on:connect="connectWeb3"
-    />
-
-    <div class="bingo" v-if="isReady">
+    <div class="bingo">
         <div class="section">
             <div class="columns">
-                <div class="column is-2 has-text-centered">
-                    <h4 class="subtitle is-4 playfair">Round</h4>
-                    <h3 class="title is-4 has-text-primary">{{gameRound}}</h3>
+                <div class="column is-4">
+                    <div class="columns is-mobile" v-if="isReady">
+                        <div class="column is-6 has-text-centered">
+                            <div class="box">
+                                <h4 class="subtitle is-5">Game Round</h4>
+                                <h3 class="title is-3 has-text-primary">{{gameRound}}</h3>
+                            </div>
+                        </div>
+                        <div class="column is-6 has-text-centered">
+                            <div class="box">
+                                <h4 class="subtitle is-5">Next Draw</h4>
+                                <h3 class="title is-3 has-text-primary" v-if="timeUntilNextDraw > 0">{{timeUntilNextDraw}} secs</h3>
+                                <h3 class="title is-3 has-text-primary" v-if="timeUntilNextDraw < 0">Pending</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <br /><br /><br />
+                    <h1 class="title has-text-centered has-text-dark is-3">Welcome to the world's first blockchain based bingo.</h1>
                 </div>
-                <div class="column is-2 has-text-centered">
-                    <h4 class="subtitle is-4 playfair">Next Draw</h4>
-                    <h3 class="title is-4 has-text-primary" v-if="timeUntilNextDraw > 0">{{timeUntilNextDraw}} secs</h3>
-                    <h3 class="title is-4 has-text-primary" v-if="timeUntilNextDraw < 0">Pending</h3>
-                </div>
+
                 <div class="column has-text-centered">
-                    <h1 class="title is-1 playfair">Bingo Swap</h1>
+                    <img src="/logo.png" />
                 </div>
-                <div class="column is-2 has-text-centered">
-                    <h4 class="subtitle is-4 playfair">Cards Sold</h4>
-                    <h3 class="title is-4 has-text-primary">{{currentTokenId - gameTokenFloor}}</h3>
-                </div>
-                <div class="column is-2 has-text-centered">
-                    <h4 class="subtitle is-4 playfair">Prize</h4>
-                    <h3 class="title is-4 has-text-primary">{{prizePool}} ETH</h3>
+                <div class="column is-4">
+                    <div class="columns is-mobile" v-if="isReady">
+                        <div class="column is-6 has-text-centered">
+                            <div class="box">
+                                <h4 class="subtitle is-5">Cards Sold</h4>
+                                <h3 class="title is-3 has-text-primary">{{currentTokenId - gameTokenFloor}}</h3>
+                            </div>
+                        </div>
+                        <div class="column is-6 has-text-centered">
+                            <div class="box">
+                                <h4 class="subtitle is-5">Prize Pool</h4>
+                                <h3 class="title is-3 has-text-primary">{{prizePool}} ETH</h3>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="box has-text-centered" v-if="gameRound === 3">
+                        <div class="media">
+                            <div class="media-left">
+                                <figure class="image is-128x128">
+                                    <img src="./assets/images/rock.png" alt="Stoners Rock">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <h4 class="subtitle is-5">NFT Prize</h4>
+                                <p class="title is-3 has-text-primary">Stoners Rock</p>
+                                <p class="subtitle is-6"><a href="https://twitter.com/mystoners">@mystoners</a></p>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
             </div>
         </div>
 
-        <div class="tabs is-centered">
-            <ul class="playfair">
-                <li class="is-active"><a>Play Bingo</a></li>
-                <li><a>About the Game</a></li>
-            </ul>
+        <div class="section has-text-centered" v-if="!isReady && isMounted">
+            <Welcome
+                v-on:connect="connectWeb3"
+            />
         </div>
 
-        <div class="section balls-section has-background-dark has-text-centered">
+        <div class="section balls-section has-background-primary has-text-centered" v-if="isReady">
             <Balls
-                v-if="isReady"
                 :account="account"
                 :contract="contract"
                 :refresh="refresh"
@@ -47,9 +76,8 @@
             />
         </div>
 
-        <div class="section has-text-centered">
+        <div class="section has-text-centered" v-if="isReady">
             <Mint
-                    v-if="isReady"
                     :account="account"
                     :contract="contract"
                     :weedContract="weedContract"
@@ -60,14 +88,19 @@
             <p class="help">Contract Address: <strong>{{contract.address}}</strong></p>
         </div>
 
-        <div class="section has-text-centered">
+        <div class="section has-text-centered" v-if="isReady">
             <Cards
-                    v-if="isReady"
                     :account="account"
                     :contract="contract"
                     :refresh="refresh"
             />
         </div>
+
+        <section class="section has-background-black">
+            <About
+                :ballDrawTime="ballDrawTime"
+            />
+        </section>
 
         <Admin
                 v-if="isReady"
@@ -91,6 +124,7 @@ import Cards from './components/Cards'
 import Balls from './components/Balls'
 import Admin from './components/Admin'
 import Welcome from './components/Welcome'
+import About from './components/About'
 
 import { createClient } from 'urql';
 
@@ -101,6 +135,7 @@ export default {
       account: '',
       connectionInProgress: false,
       network: 0,
+      isMounted: false,
       isConnected: false,
       isReady: false,
       contract: {},
@@ -120,37 +155,24 @@ export default {
     }
   },
   components: {
-    Mint, Cards, Balls, Admin, Welcome
+    Mint, Cards, Balls, Admin, Welcome, About
   },
-  mounted: function() {
-    //this.fillBox();
+  mounted: async function() {
+    if(this.getCookie('connected')) {
+      await this.connectWeb3();
+    }
+    this.isMounted = true;
   },
   methods: {
-    fillBox: function() {
-        let canvas = document.getElementById('canvas-card');
-        let ctx = canvas.getContext('2d');
-        let imgSrc = document.getElementById('canvas-image');
-        let img = new Image();
-        img.src = imgSrc.src;
-        img.onload = function() {
-          ctx.drawImage(img, 0, 0);
-
-          // Fill in boxes
-          ctx.font = '65px "Source Code Pro"';
-          ctx.fillText('12', 110, 270);
-          ctx.fillText('22', 210, 270); // + 100
-          ctx.fillText('15', 310, 270);
-          ctx.fillText('33', 410, 270);
-          ctx.fillText('74', 510, 270);
-          ctx.fillText('1', 130, 370);
-          ctx.fillText('22', 210, 370); // + 150
-          ctx.fillText('5', 430, 370); // + 155
-          ctx.fillText('3', 530, 370); // + 155
-          //ctx.fillText('7', 775, 425); // + 150
-        };
-
-
-
+    getCookie: function(cookieName) {
+      let name = cookieName + "=";
+      let allCookieArray = document.cookie.split(';');
+      for(let i=0; i<allCookieArray.length; i++) {
+        let temp = allCookieArray[i].trim();
+        if (temp.indexOf(name)===0)
+          return temp.substring(name.length,temp.length);
+      }
+      return "";
     },
     connectWeb3: async function() {
       this.connectionInProgress = true;
@@ -158,9 +180,17 @@ export default {
         // Request account access
         let accounts = await this.$web3.currentProvider.send('eth_requestAccounts');
         this.account = accounts.result[0];
-        this.connectionInProgress = false;
-        await this.initContracts();
-        this.isConnected = true;
+        let networkId = await this.$web3.eth.net.getId();
+        switch (networkId) {
+            case 42:
+                this.connectionInProgress = false;
+                document.cookie = "connected=true";
+                await this.initContracts();
+                this.isConnected = true;
+                break;
+            default:
+                alert('Please connect to the Kovan test network.');
+        }
       } catch (error) {
         // User denied account access
         console.log('did not receive accts', error);
@@ -181,7 +211,7 @@ export default {
       });
       this.weedContract = await contract.deployed();
 
-      this.loadData();
+      await this.loadData();
     },
     loadData: async function() {
       let response = await this.contract.getCurrent.call();

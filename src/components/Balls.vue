@@ -1,12 +1,13 @@
 <template>
     <div class="balls-wrapper">
-        <div class="balls">
+        <div class="balls" v-if="balls.length > 0">
             <Ball
                     v-for="ball in balls"
                     :key="ball"
                     :value="parseInt(ball)"
             />
         </div>
+        <div class="title has-text-white" v-if="balls.length === 0">Next game starting soon.</div>
     </div>
 </template>
 
@@ -54,7 +55,7 @@
             }
         `;
         response = await this.graphClient.query(query).toPromise();
-        if(response.data.game.balls.length > 0) {
+        if(response.data.game && response.data.game.balls.length > 0) {
           this.balls = [];
           for(let i=0; i<response.data.game.balls.length; i++) {
             this.balls.push(parseInt(response.data.game.balls[i].ball));

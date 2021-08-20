@@ -3,19 +3,19 @@
         <div class="columns">
             <div class="column is-half is-offset-one-quarter">
                 <div class="box">
-                    <h1 class="title playfair is-3">Buy Bingo Cards</h1>
+                    <h1 class="title is-3">Buy Bingo Cards</h1>
                     <div class="columns">
                         <div class="column">
-                            <p class="subtitle is-6 playfair">Price</p>
+                            <p class="subtitle is-6">Price</p>
                             <p class="title has-text-primary is-4" v-if="currencyChoice === 'ETH'">{{pricePerCard}}</p>
                             <p class="title has-text-primary is-4" v-if="currencyChoice === 'WEED'">{{weedPerCard}}</p>
                         </div>
                         <div class="column">
-                            <p class="subtitle is-6 playfair">Mint Limit</p>
+                            <p class="subtitle is-6">Mint Limit</p>
                             <p class="title has-text-primary is-4">{{maxCardPurchase}}</p>
                         </div>
                         <div class="column">
-                            <p class="subtitle is-6 playfair">Cards Remaining</p>
+                            <p class="subtitle is-6">Cards Remaining</p>
                             <p class="title has-text-primary is-4">{{maxCardsPerGame - (currentTokenId - gameTokenFloor)}}</p>
                         </div>
                     </div>
@@ -33,7 +33,7 @@
                             <input v-model="mintAmount" class="input" type="text" placeholder="Amount to Mint">
                         </p>
                         <p class="control">
-                            <a class="button" @click="mint">
+                            <a class="button is-primary" @click="mint">
                                 Mint
                             </a>
                         </p>

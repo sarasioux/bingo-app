@@ -1,11 +1,11 @@
 <template>
     <div class="box" :class="{'has-background-warning':isWinner}">
-        <h2 class="title is-4 playfair">Card #{{id}}</h2>
+        <h2 class="title is-4">Card #{{id}}</h2>
         <figure class="image is-square" v-if="image">
             <img :src="image">
         </figure>
         <br />
-        <a @click="claimBingo" v-if="isCurrent" class="button is-fullwidth is-primary">Claim Bingo</a><br />
+        <a @click="claimBingo" v-if="isWinner" class="button is-fullwidth is-primary">Claim Bingo</a><br />
     </div>
 </template>
 

@@ -1,0 +1,11 @@
+@charset "utf-8";
+@import "../../../node_modules/bulma/sass/utilities/functions";
+
+@import url('https://fonts.googleapis.com/css?family=Urbanist:500,600,700,800');
+
+$family-primary: Urbanist;
+
+$primary: #FD5656;
+$link: #026C7C;
+
+@import "../../../node_modules/bulma/bulma.sass";
