@@ -1,7 +1,13 @@
 <template>
-    <div class="cards" v-if="cards.length > 0">
+    <div class="cards" v-if="cards.length > 0 || oldCards.length > 0">
         <h1 class="title is-3">My Cards</h1>
-        <div class="columns is-multiline">
+        <div class="tabs is-centered">
+            <ul>
+                <li :class="{'is-active':selected === 'current'}"><a @click="selected='current'">Current Cards</a></li>
+                <li :class="{'is-active':selected === 'previous'}"><a @click="selected='previous'">Previous Games</a></li>
+            </ul>
+        </div>
+        <div class="columns is-multiline" v-if="selected === 'current'">
             <div class="column is-3" v-for="card in cards" :key="card">
                 <Card
                     :id="parseInt(card)"
@@ -10,7 +16,7 @@
                 />
             </div>
         </div>
-        <div class="columns is-multiline">
+        <div class="columns is-multiline" v-if="selected === 'previous'">
             <div class="column is-3" v-for="card in oldCards" :key="card">
                 <Card
                         :id="parseInt(card)"
@@ -29,6 +35,7 @@
     name: 'Cards',
     data: function() {
       return {
+        selected: 'current',
         gameRound: '',
         gameFloor: '',
         cards: [],
@@ -40,8 +47,7 @@
     },
     watch: {
       refresh: async function() {
-        this.cards = await this.contract.getCardsByOwner.call(this.account);
-        this.cards.reverse();
+        this.loadCards();
       }
     },
     props: {
@@ -53,6 +59,12 @@
         let response = await this.contract.getCurrent.call();
         this.gameRound = parseInt(response.game);
         this.gameFloor = parseInt(await this.contract.gameFloor.call());
+        this.loadCards();
+    },
+    methods: {
+      loadCards: async function() {
+        this.cards = [];
+        this.oldCards = [];
         let cards = await this.contract.getCardsByOwner.call(this.account);
         cards.reverse();
         for(let i=0; i<cards.length; i++) {
@@ -62,8 +74,7 @@
             this.oldCards.push(parseInt(cards[i]));
           }
         }
-    },
-    methods: {
+      }
     }
   }
 </script>

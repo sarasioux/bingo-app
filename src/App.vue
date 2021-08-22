@@ -14,7 +14,7 @@
                             <div class="box">
                                 <h4 class="subtitle is-6">Next Draw</h4>
                                 <h3 class="title is-5 has-text-primary" v-if="timeUntilNextDraw > 0">{{timeUntilNextDraw}} secs</h3>
-                                <h3 class="title is-5 has-text-primary" v-if="timeUntilNextDraw < 0">Pending</h3>
+                                <h3 class="title is-5 has-text-primary" v-if="timeUntilNextDraw < 0">Pending <span class="icon"><i class="fas fa-spinner fa-pulse"></i></span></h3>
                             </div>
                         </div>
                     </div>
@@ -72,7 +72,7 @@
                 :contract="contract"
                 :refresh="refresh"
                 :graphClient="graphClient"
-                v-on:newball="loadData"
+                v-on:newball="refreshCards"
             />
         </div>
 

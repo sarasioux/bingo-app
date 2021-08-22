@@ -61,16 +61,20 @@
         if(response.data.game && response.data.game.balls.length > 0) {
           this.balls = [];
           for(let i=0; i<response.data.game.balls.length; i++) {
-            this.balls.push(parseInt(response.data.game.balls[i].ball));
+            this.balls[this.balls.length] = parseInt(response.data.game.balls[i].ball);
           }
         }
-        this.balls.sort();
+        this.balls.sort(function(a, b) {
+          return a - b;
+        });
       },
       ballListener: async function(event) {
         console.log('ball listener', event);
         this.newBall = parseInt(event.args.ball);
         this.balls.push(this.newBall);
-        this.balls.sort();
+        this.balls.sort(function(a, b) {
+          return a - b;
+        });
         this.$emit('newball');
       }
 
