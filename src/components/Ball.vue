@@ -1,5 +1,5 @@
 <template>
-    <div class="ball has-background-light">
+    <div class="ball has-background-light" :class="{'has-background-warning':value === newBall}">
         <h1 class="title is-2">{{value}}</h1>
     </div>
 </template>
@@ -14,7 +14,8 @@
     watch: {
     },
     props: {
-      value: Number
+      value: Number,
+      newBall: Number
     },
     mounted: async function() {
     },

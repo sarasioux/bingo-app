@@ -5,6 +5,7 @@
                     v-for="ball in balls"
                     :key="ball"
                     :value="parseInt(ball)"
+                    :newBall="newBall"
             />
         </div>
         <div class="title has-text-white" v-if="balls.length === 0">Next game starting soon.</div>
@@ -20,7 +21,8 @@
       return {
         balls: [],
         chosenBalls: [],
-        gameRound: ''
+        gameRound: '',
+        newBall: 0,
       }
     },
     components: {
@@ -39,6 +41,7 @@
     },
     mounted: async function() {
         this.loadBalls();
+        this.contract.BallPicked().on('data', this.ballListener);
     },
     methods: {
       loadBalls: async function() {
@@ -61,7 +64,15 @@
             this.balls.push(parseInt(response.data.game.balls[i].ball));
           }
         }
+        this.balls.sort();
       },
+      ballListener: async function(event) {
+        console.log('ball listener', event);
+        this.newBall = parseInt(event.args.ball);
+        this.balls.push(this.newBall);
+        this.balls.sort();
+        this.$emit('newball');
+      }
 
     }
   }

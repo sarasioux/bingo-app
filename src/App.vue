@@ -35,7 +35,7 @@
                         <div class="column is-6 has-text-centered">
                             <div class="box">
                                 <h4 class="subtitle is-6">Prize Pool</h4>
-                                <h3 class="title is-5 has-text-primary">{{prizePool}} ETH</h3>
+                                <h3 class="title is-5 has-text-primary"><span class="icon"><i class="fab fa-ethereum"></i></span>{{prizePool}}</h3>
                             </div>
                         </div>
                     </div>
@@ -72,6 +72,7 @@
                 :contract="contract"
                 :refresh="refresh"
                 :graphClient="graphClient"
+                v-on:newball="loadData"
             />
         </div>
 
@@ -160,6 +161,7 @@ export default {
     if(this.getCookie('connected')) {
       await this.connectWeb3();
     }
+    this.queryGraph();
     this.isMounted = true;
   },
   methods: {
@@ -216,14 +218,12 @@ export default {
       let response = await this.contract.getCurrent.call();
       this.gameRound = parseInt(response.game);
       this.currentTokenId = parseInt(response.token);
-      this.prizePool = parseInt(await this.contract.prizePool.call()) / 1e18;
+      this.prizePool = Math.round((parseInt(await this.contract.prizePool.call()) / 1e18)*1000) / 1000;
       this.lastBallTime = parseInt(await this.contract.lastBallTime.call());
       this.ballDrawTime = parseInt(await this.contract.ballDrawTime.call());
       this.gameTokenFloor = parseInt(await this.contract.gameFloor.call());
       this.timeUntilDraw();
       this.isReady = true;
-
-      this.queryGraph();
     },
     refreshCards: function() {
       this.refresh = Date.now();
