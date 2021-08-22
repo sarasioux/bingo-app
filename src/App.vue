@@ -70,7 +70,7 @@
             <Balls
                 :account="account"
                 :contract="contract"
-                :refresh="refresh"
+                :refresh="refreshBalls"
                 :graphClient="graphClient"
                 v-on:newball="refreshCards"
             />
@@ -141,6 +141,7 @@ export default {
       contract: {},
       weedContract: {},
       refresh: 0,
+      refreshBalls: 0,
 
       gameRound: '',
       prizePool: '',
@@ -216,6 +217,9 @@ export default {
     },
     loadData: async function() {
       let response = await this.contract.getCurrent.call();
+      if(this.gameRound > 0 && this.gameRound !== parseInt(response.game)) {
+        this.refreshBalls = Date.now();
+      }
       this.gameRound = parseInt(response.game);
       this.currentTokenId = parseInt(response.token);
       this.prizePool = Math.round((parseInt(await this.contract.prizePool.call()) / 1e18)*1000) / 1000;

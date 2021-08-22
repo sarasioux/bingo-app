@@ -1,6 +1,7 @@
 <template>
     <div class="balls-wrapper">
         <div class="balls" v-if="balls.length > 0">
+            <h3 class="subtitle">{{balls.length}} Balls Dropped</h3>
             <Ball
                     v-for="ball in balls"
                     :key="ball"
