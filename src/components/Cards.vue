@@ -8,6 +8,7 @@
             </ul>
         </div>
         <div class="columns is-multiline" v-if="selected === 'current'">
+            <div class="column" v-if="cards.length === 0">You don't have any current cards.  Why don't you go mint some?</div>
             <div class="column is-3" v-for="card in cards" :key="card">
                 <Card
                     :id="parseInt(card)"
@@ -17,6 +18,7 @@
             </div>
         </div>
         <div class="columns is-multiline" v-if="selected === 'previous'">
+            <div class="column" v-if="oldCards.length === 0">You don't have any previous cards.  When a game ends they'll show up here.</div>
             <div class="column is-3" v-for="card in oldCards" :key="card">
                 <Card
                         :id="parseInt(card)"
