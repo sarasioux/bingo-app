@@ -40,7 +40,7 @@
                         </div>
                     </div>
 
-                    <div class="box has-text-centered" v-if="gameRound === 3">
+                    <div class="box has-text-centered" v-if="gameRound === 5">
                         <div class="media">
                             <div class="media-left">
                                 <figure class="image is-96x96">

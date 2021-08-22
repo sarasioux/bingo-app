@@ -33,6 +33,7 @@
                 <li>It's possible for more than one card to be a winner, so only the first person to claim bingo wins the prize.</li>
                 <li>NFT prizes are distributed manually to the wallet address that successfully claims bingo.</li>
                 <li>The winner will need to pay gas fees to claim bingo, but the prize money will be transferred during that same transaction.</li>
+                <li>A single complete line wins.</li>
             </ul>
         </div>
         <div class="column is-1"></div>
