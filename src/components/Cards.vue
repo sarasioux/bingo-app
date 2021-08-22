@@ -62,6 +62,7 @@
         this.gameRound = parseInt(response.game);
         this.gameFloor = parseInt(await this.contract.gameFloor.call());
         this.loadCards();
+        this.contract.CardGenerated().on('data', this.cardListener);
     },
     methods: {
       loadCards: async function() {
@@ -74,6 +75,14 @@
             this.cards.push(parseInt(cards[i]));
           } else {
             this.oldCards.push(parseInt(cards[i]));
+          }
+        }
+      },
+      cardListener: async function(event) {
+        let tokenId = parseInt(event.args.tokenId);
+        for(let i=0; i<this.cards.length; i++) {
+          if(this.cards[i] === tokenId) {
+            setTimeout(this.loadCards, 5000);
           }
         }
       }

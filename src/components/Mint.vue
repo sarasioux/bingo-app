@@ -30,7 +30,7 @@
 
                         </div>
                         <p class="control is-expanded">
-                            <input v-model="mintAmount" class="input" type="text" placeholder="Amount to Mint">
+                            <input v-model="mintAmount" class="input" type="number" min="1" max="10" step="1" placeholder="Amount to Mint">
                         </p>
                         <p class="control">
                             <a class="button is-primary" @click="mint">
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-  import BN from 'bignumber.js';
+  // import BN from 'bignumber.js';
 
   export default {
     name: 'Mint',
@@ -80,11 +80,20 @@
     },
     methods: {
       mint: async function() {
+        if(this.mintAmount < 1) {
+          alert('Minimum amount to mint is 1 card.');
+          return;
+        }
+        if(this.mintAmount > this.maxCardPurchase) {
+          alert('Maximum amount to mint is 10 cards.');
+          return;
+        }
         if(this.currencyChoice === 'ETH') {
           await this.contract.mintCard(this.mintAmount, {value: this.mintAmount * this.pricePerCard * 1e18, from: this.account});
           this.$emit('minted');
         } else {
-          let totalWeed = new BN(this.weedPerCard * this.mintAmount * 1e18);
+          //let totalWeed = new BN(this.weedPerCard * this.mintAmount * 1e18);
+          let totalWeed = '4000000000000000000000';
           await this.weedContract.approve(this.contract.address, totalWeed);
           await this.contract.mintCard(this.mintAmount, {from: this.account});
           this.$emit('minted');
