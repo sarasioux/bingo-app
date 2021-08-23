@@ -46,7 +46,7 @@
             </div>
         </div>
 
-        <div class="modal mintEthModal" :class="{'is-active':showMintEthModal}">
+        <div class="modal" :class="{'is-active':showMintEthModal}">
             <div class="modal-background" @click="showMintEthModal=false"></div>
             <div class="modal-content">
                 <div class="box">
@@ -60,7 +60,7 @@
                 </div>
             </div>
         </div>
-        <div class="modal mintEthModal" :class="{'is-active':showMintWeedModal}">
+        <div class="modal" :class="{'is-active':showMintWeedModal}">
             <div class="modal-background" @click="showMintWeedModal=false"></div>
             <div class="modal-content">
                 <div class="box">
@@ -75,7 +75,6 @@
                 </div>
             </div>
         </div>
-
     </div>
 </template>
 
@@ -97,7 +96,6 @@
         maxCardsPerGame: '',
         gameTokenFloor: '',
         currentTokenId: '',
-
         showMintEthModal: false,
         showMintWeedModal: false,
         showMintWeedApproved: false,
@@ -162,7 +160,6 @@
         this.pricePerCard = parseInt(await this.contract.pricePerCard.call()) / 1e18;
         this.maxCardsPerGame = parseInt(await this.contract.maxCards.call());
         this.gameTokenFloor = parseInt(await this.contract.gameFloor.call());
-
         this.myEthBalance = Math.round(await this.$web3.eth.getBalance(this.account) / 1e16) / 1e2;
         this.myWeedBalance = parseInt(await this.weedContract.balanceOf(this.account)) / 1e18;
       },

@@ -71,7 +71,7 @@
             <Balls
                 :account="account"
                 :contract="contract"
-                :refresh="refreshBalls"
+                :refreshBalls="refreshBalls"
                 :graphClient="graphClient"
                 v-on:newball="refreshCards"
             />

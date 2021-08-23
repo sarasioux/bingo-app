@@ -30,14 +30,14 @@
       Ball
     },
     watch: {
-      refresh: async function() {
+      refreshBalls: async function() {
         this.loadBalls();
       }
     },
     props: {
       account: String,
       contract: Object,
-      refresh: Number,
+      refreshBalls: Number,
       graphClient: Object
     },
     mounted: async function() {

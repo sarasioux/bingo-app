@@ -7,6 +7,17 @@
         <br />
         <a @click="claimBingo" v-if="isWinner" class="button is-fullwidth is-danger">Claim Bingo</a><br />
     </div>
+    <div class="modal" :class="{'is-active':showClaimModal}">
+        <div class="modal-background" @click="showClaimModal=false"></div>
+        <div class="modal-content">
+            <div class="box">
+                <h1 class="title">Congratulations Winner!</h1>
+                <p v-if="!showClaimPrize">Waiting for transaction confirmation... <span class="icon"><i class="fas fa-spinner fa-pulse"></i></span></p>
+                <p class="title is-5 has-text-primary" v-if="showClaimPrize">You just had {{prizePool}} ETH deposited into your account.<br /></p>
+                <p v-if="showClaimPrize">If there was an NFT prize for this round, it will be transferred to you shortly.</p>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
@@ -22,6 +33,9 @@
         image: '',
         isCurrent: false,
         isWinner: false,
+        showClaimModal: false,
+        showClaimPrize: false,
+        prizePool: 0,
       }
     },
     watch: {
@@ -52,8 +66,10 @@
         this.image = this.tokenJson.image;
       },
       claimBingo: async function() {
+        this.showClaimModal = true;
+        this.prizePool = Math.round((parseInt(await this.contract.prizePool.call()) / 1e18)*1000) / 1000;
         await this.contract.claimBingo(this.id);
-        alert('Congratulations, you\'re the winner! Your ETH has been deposited.');
+        this.showClaimPrize = true;
       },
     }
   }
