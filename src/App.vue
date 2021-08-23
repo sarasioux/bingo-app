@@ -63,6 +63,7 @@
         <div class="section has-text-centered" v-if="!isReady && isMounted">
             <Welcome
                 v-on:connect="connectWeb3"
+                :showHelp="showHelp"
             />
         </div>
 
@@ -152,7 +153,9 @@ export default {
 
       timeUntilNextDraw: 0,
 
-      graphClient: {}
+      graphClient: {},
+
+      showHelp: false,
     }
   },
   components: {
@@ -194,8 +197,7 @@ export default {
                 alert('Please connect to the Kovan test network.');
         }
       } catch (error) {
-        // User denied account access
-        alert('Please enable web3 to continue.');
+        this.showHelp = true;
       }
     },
     initContracts: async function() {
