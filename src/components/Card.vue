@@ -1,6 +1,6 @@
 <template>
     <div class="box" :class="{'has-background-primary':isWinner}">
-        <h2 class="title is-4">Card #{{id}}</h2>
+        <h2 class="title is-5">Card #{{id}}</h2>
         <figure class="image is-square" v-if="image">
             <img :src="image">
         </figure>
@@ -52,8 +52,8 @@
         this.image = this.tokenJson.image;
       },
       claimBingo: async function() {
-        const response = await this.contract.claimBingo(this.id);
-        console.log('claim response', response);
+        await this.contract.claimBingo(this.id);
+        alert('Congratulations, you\'re the winner! Your ETH has been deposited.');
       },
     }
   }

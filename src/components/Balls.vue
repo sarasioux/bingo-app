@@ -72,11 +72,19 @@
       ballListener: async function(event) {
         console.log('ball listener', event);
         this.newBall = parseInt(event.args.ball);
-        this.balls.push(this.newBall);
-        this.balls.sort(function(a, b) {
-          return a - b;
-        });
-        this.$emit('newball');
+        let found = false;
+        for(let i=0; i<this.balls.length; i++) {
+          if(this.balls[i] === this.newBall) {
+            found = true;
+          }
+        }
+        if(!found) {
+          this.balls.push(this.newBall);
+          this.balls.sort(function(a, b) {
+            return a - b;
+          });
+          this.$emit('newball');
+        }
       }
 
     }

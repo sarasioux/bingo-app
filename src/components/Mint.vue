@@ -93,7 +93,7 @@
           this.$emit('minted');
         } else {
           //let totalWeed = new BN(this.weedPerCard * this.mintAmount * 1e18);
-          let totalWeed = '4000000000000000000000';
+          let totalWeed = (this.weedPerCard * this.mintAmount).toString() + '000000000000000000';
           await this.weedContract.approve(this.contract.address, totalWeed);
           await this.contract.mintCard(this.mintAmount, {from: this.account});
           this.$emit('minted');
