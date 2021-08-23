@@ -46,11 +46,41 @@
             </div>
         </div>
 
+        <div class="modal mintEthModal" :class="{'is-active':showMintEthModal}">
+            <div class="modal-background" @click="showMintEthModal=false"></div>
+            <div class="modal-content">
+                <div class="box">
+                    <h1 class="title">Minting {{mintAmount}} Cards</h1>
+                    <p>Waiting for transaction confirmation... <span class="icon"><i class="fas fa-spinner fa-pulse"></i></span></p>
+                    <article class="message is-danger" v-if="modalMessage">
+                        <div class="message-body">
+                            {{modalMessage}}
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+        <div class="modal mintEthModal" :class="{'is-active':showMintWeedModal}">
+            <div class="modal-background" @click="showMintWeedModal=false"></div>
+            <div class="modal-content">
+                <div class="box">
+                    <h1 class="title">Minting {{mintAmount}} Cards</h1>
+                    <p v-if="!showMintWeedApproved">Waiting for $WEED approval... <span class="icon"><i class="fas fa-spinner fa-pulse"></i></span></p>
+                    <p v-if="showMintWeedApproved">Waiting for transaction confirmation... <span class="icon"><i class="fas fa-spinner fa-pulse"></i></span></p>
+                    <article class="message is-danger" v-if="modalMessage">
+                        <div class="message-body">
+                            {{modalMessage}}
+                        </div>
+                    </article>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
 
 <script>
-  // import BN from 'bignumber.js';
+  import confetti from 'canvas-confetti';
 
   export default {
     name: 'Mint',
@@ -67,6 +97,11 @@
         maxCardsPerGame: '',
         gameTokenFloor: '',
         currentTokenId: '',
+
+        showMintEthModal: false,
+        showMintWeedModal: false,
+        showMintWeedApproved: false,
+        modalMessage: '',
       }
     },
     props: {
@@ -80,6 +115,7 @@
     },
     methods: {
       mint: async function() {
+        this.modalMessage = '';
         if(this.mintAmount < 1) {
           alert('Minimum amount to mint is 1 card.');
           return;
@@ -89,14 +125,34 @@
           return;
         }
         if(this.currencyChoice === 'ETH') {
-          await this.contract.mintCard(this.mintAmount, {value: this.mintAmount * this.pricePerCard * 1e18, from: this.account});
-          this.$emit('minted');
+          this.showMintEthModal = true;
+          try {
+            await this.contract.mintCard(this.mintAmount, {value: this.mintAmount * this.pricePerCard * 1e18, from: this.account});
+            this.showMintEthModal = false;
+            this.mintAmount = '';
+            this.$emit('minted');
+            this.confetti();
+          }
+          catch(error) {
+            this.modalMessage = error.message;
+          }
         } else {
-          //let totalWeed = new BN(this.weedPerCard * this.mintAmount * 1e18);
-          let totalWeed = (this.weedPerCard * this.mintAmount).toString() + '000000000000000000';
-          await this.weedContract.approve(this.contract.address, totalWeed);
-          await this.contract.mintCard(this.mintAmount, {from: this.account});
-          this.$emit('minted');
+          this.showMintWeedModal = true;
+          try {
+            let totalWeed = (this.weedPerCard * this.mintAmount).toString() + '000000000000000000';
+            await this.weedContract.approve(this.contract.address, totalWeed);
+            this.showMintWeedApproved = true;
+            await this.contract.mintCard(this.mintAmount, {from: this.account});
+            this.showMintWeedModal = false;
+            this.showMintWeedApproved = false;
+            this.mintAmount = '';
+            this.$emit('minted');
+            this.confetti();
+          }
+          catch(error) {
+            this.modalMessage = error.message;
+          }
+
         }
       },
       loadData: async function() {
@@ -116,7 +172,23 @@
         } else {
           return this.myWeedBalance;
         }
-      }
+      },
+      confetti: function() {
+        let colors = ['#FD2A00', '#FDFE00', '#19C401'];
+        let end = Date.now() + (3 * 1000);
+        (function frame() {
+          confetti({
+            particleCount: 3,
+            angle: -90,
+            spread: 200,
+            origin: { y: -0.2 },
+            colors: colors
+          });
+          if (Date.now() < end) {
+            requestAnimationFrame(frame);
+          }
+        }());
+      },
     }
   }
 </script>

@@ -12,6 +12,7 @@
     "@truffle/contract": "^4.3.25",
     "bignumber.js": "^9.0.1",
     "bulma": "^0.9.3",
+    "canvas-confetti": "^1.4.0",
     "core-js": "^3.6.5",
     "graphql": "^15.5.1",
     "node-sass": "^6.0.1",
