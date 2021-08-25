@@ -24,6 +24,7 @@
                         :id="parseInt(card)"
                         :contract="contract"
                         :account="account"
+                        v-on:claimed="claimed"
                 />
             </div>
         </div>
@@ -49,42 +50,66 @@
     },
     watch: {
       refresh: async function() {
-        this.loadCards();
+        this.loadCardsGraph();
       }
     },
     props: {
       account: String,
       contract: Object,
-      refresh: Number
+      refresh: Number,
+      graphClient: Object
     },
     mounted: async function() {
         let response = await this.contract.getCurrent.call();
         this.gameRound = parseInt(response.game);
         this.gameFloor = parseInt(await this.contract.gameFloor.call());
-        this.loadCards();
+        this.loadCardsGraph();
         this.contract.CardGenerated().on('data', this.cardListener);
     },
     methods: {
-      loadCards: async function() {
-        this.cards = [];
-        this.oldCards = [];
-        let cards = await this.contract.getCardsByOwner.call(this.account);
-        cards.reverse();
-        for(let i=0; i<cards.length; i++) {
-          if(parseInt(cards[i]) > this.gameFloor) {
-            this.cards.push(parseInt(cards[i]));
-          } else {
-            this.oldCards.push(parseInt(cards[i]));
-          }
-        }
-      },
       cardListener: async function(event) {
         let tokenId = parseInt(event.args.tokenId);
         for(let i=0; i<this.cards.length; i++) {
           if(this.cards[i] === tokenId) {
-            setTimeout(this.loadCards, 5000);
+            setTimeout(this.loadCardsGraph, 5000);
           }
         }
+      },
+      claimed: function() {
+        this.$emit('claimed');
+      },
+      loadCardsGraph: async function() {
+        let query = `{
+              owners(where:{address:"${this.account}"}) {
+              tokens {
+                id,
+                  game {
+                  id
+                }
+              }
+            }
+        }`;
+        let cards = [];
+        let oldCards = [];
+        let response = await this.graphClient.query(query).toPromise();
+        if(response.data.owners[0] && response.data.owners[0].tokens.length > 0) {
+          for(let i=0; i<response.data.owners[0].tokens.length; i++) {
+            let token = response.data.owners[0].tokens[i];
+            if(parseInt(token.id) > this.gameFloor) {
+              cards.push(parseInt(token.id));
+            }  else {
+              oldCards.push(parseInt(token.id));
+            }
+          }
+        }
+        cards.sort(function(a, b) {
+          return b - a;
+        });
+        oldCards.sort(function(a, b) {
+          return b - a;
+        });
+        this.cards = cards;
+        this.oldCards = oldCards;
       }
     }
   }

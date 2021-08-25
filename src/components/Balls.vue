@@ -7,6 +7,7 @@
                     :key="ball"
                     :value="parseInt(ball)"
                     :newBall="newBall"
+                    :drawtime="ballDraws[ball]"
             />
         </div>
         <div class="title has-text-white" v-if="balls.length === 0">Next game starting soon.</div>
@@ -24,6 +25,7 @@
         chosenBalls: [],
         gameRound: '',
         newBall: 0,
+        ballDraws: {}
       }
     },
     components: {
@@ -53,7 +55,8 @@
             query {
                 game(id: ${this.gameRound}) {
                     balls {
-                      ball
+                      ball,
+                      drawtime
                     }
                 }
             }
@@ -62,7 +65,9 @@
         if(response.data.game && response.data.game.balls.length > 0) {
           this.balls = [];
           for(let i=0; i<response.data.game.balls.length; i++) {
-            this.balls[this.balls.length] = parseInt(response.data.game.balls[i].ball);
+            let ball = parseInt(response.data.game.balls[i].ball);
+            this.balls[this.balls.length] = ball;
+            this.ballDraws[ball] = parseInt(response.data.game.balls[i].drawtime);
           }
         }
         this.balls.sort(function(a, b) {

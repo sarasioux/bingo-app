@@ -14,68 +14,121 @@
                     </p>
                     <div class="panel-block">
                         <div class="field-label is-normal">
-                            <label class="label">Base URI</label>
-                        </div>
-                        <p class="control is-expanded">
-                            <input
-                                v-model="baseUri"
-                                class="input is-expanded"
-                                type="text"
-                                placeholder="http://localhost:3000/bingo-json/"
-                            />
-                        </p>
-                   </div>
-                    <div class="panel-block">
-                        <div class="field-label is-normal">
                             <label class="label">Ball Draw Time</label>
                         </div>
-                        <p class="control is-expanded">
+                        <div class="control is-expanded">
                             <input
                                     v-model="ballDrawTime"
                                     class="input is-expanded"
                                     type="text"
                                     placeholder="60"
                             />
-                        </p>
+                            <p class="help">Seconds between ball draws. 60 is the minimum.</p>
+                        </div>
                     </div>
                     <div class="panel-block">
                         <div class="field-label is-normal">
                             <label class="label">Min Cards Per Game</label>
                         </div>
-                        <p class="control is-expanded">
+                        <div class="control is-expanded">
                             <input
                                     v-model="minCardsPerGame"
                                     class="input is-expanded"
                                     type="text"
                                     placeholder="1"
                             />
-                        </p>
+                            <p class="help">Minimum cards to sell before balls start drawing.</p>
+                        </div>
                     </div>
                     <div class="panel-block">
                         <div class="field-label is-normal">
                             <label class="label">Max Cards Per Game</label>
                         </div>
-                        <p class="control is-expanded">
+                        <div class="control is-expanded">
                             <input
                                     v-model="maxCardsPerGame"
                                     class="input is-expanded"
                                     type="text"
                                     placeholder="100"
                             />
-                        </p>
+                            <p class="help">Maximum cards to sell per game round.</p>
+                        </div>
                     </div>
                     <div class="panel-block">
                         <div class="field-label is-normal">
                             <label class="label">Price Per Card</label>
                         </div>
-                        <p class="control is-expanded">
+                        <div class="control is-expanded">
                             <input
                                     v-model="pricePerCard"
                                     class="input is-expanded"
                                     type="text"
                                     placeholder="0.1"
                             />
-                        </p>
+                        </div>
+                    </div>
+                    <div class="panel-block">
+                        <div class="field-label is-normal">
+                            <label class="label">Prize Split</label>
+                        </div>
+                        <div class="control is-expanded">
+                            <input
+                                    v-model="prizeSplit"
+                                    class="input is-expanded"
+                                    type="text"
+                                    placeholder="2"
+                            />
+                            <p class="help">The denominator in the prize split. Higher number is smaller payout.</p>
+                        </div>
+                    </div>
+                    <div class="panel-block">
+                        <div class="field-label is-normal">
+                            <label class="label">Pattern</label>
+                        </div>
+                        <div class="control is-expanded">
+                            <div class="select">
+                                <select v-model="pattern">
+                                    <option value="1" :selected="pattern === 1">Line</option>
+                                    <option value="2">X</option>
+                                    <option value="3">Full Card</option>
+                                    <option value="4">Four Corners</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-block">
+                        <div class="field-label is-normal">
+                            <label class="label">Start Game</label>
+                        </div>
+                        <div class="control is-expanded">
+                            <div class="control">
+                                <label class="radio">
+                                    <input type="radio" name="startGame" v-model="startGame" value="true">
+                                    Yes
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="startGame" v-model="startGame" value="false">
+                                    No
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="panel-block">
+                        <div class="field-label is-normal">
+                            <label class="label">Auto Start Game</label>
+                        </div>
+                        <div class="control is-expanded">
+                            <div class="control">
+                                <label class="radio">
+                                    <input type="radio" name="autoStart" v-model="startAuto" value="true">
+                                    Yes
+                                </label>
+                                <label class="radio">
+                                    <input type="radio" name="autoStart" v-model="startAuto" value="false">
+                                    No
+                                </label>
+                            </div>
+                        </div>
                     </div>
                     <div class="panel-block">
                         <p class="control is-expanded">
@@ -100,9 +153,11 @@
         minCardsPerGame: '',
         maxCardsPerGame: '',
         pricePerCard: '',
-        prizeSplit: 2,
-        forceBall: 0,
+        prizeSplit: '',
         ballRequest: '',
+        pattern: '',
+        startGame: false,
+        startAuto: false,
       }
     },
     props: {
@@ -116,16 +171,29 @@
     },
     methods: {
       loadData: async function() {
-        this.baseUri = await this.contract.baseUri.call();
         this.ballDrawTime = await this.contract.ballDrawTime.call();
         this.minCardsPerGame = await this.contract.minCards.call();
         this.maxCardsPerGame = await this.contract.maxCards.call();
         this.pricePerCard = await this.contract.pricePerCard.call() / 1e18;
+        this.prizeSplit = parseInt(await this.contract.prizeSplit.call());
+        this.pattern = parseInt(await this.contract.pattern.call());
+        this.startGame = await this.contract.startGame.call();
+        this.startAuto = await this.contract.startAuto.call();
       },
       saveSettings: async function() {
-        await this.contract.contractSettings(this.baseUri, this.ballDrawTime, this.minCardsPerGame, this.maxCardsPerGame, String(this.pricePerCard * 1e18), this.prizeSplit, this.account);
+        await this.contract.contractSettings(
+          this.startGame,
+          this.startAuto,
+          this.ballDrawTime,
+          this.minCardsPerGame,
+          this.maxCardsPerGame,
+          String(this.pricePerCard * 1e18),
+          this.prizeSplit,
+          this.pattern,
+          this.account
+        );
         this.loadData();
-      },
+      }
     }
   }
 </script>

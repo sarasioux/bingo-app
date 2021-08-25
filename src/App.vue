@@ -28,8 +28,8 @@
                     <div class="columns is-mobile" v-if="isReady">
                         <div class="column is-6 has-text-centered">
                             <div class="box">
-                                <h4 class="subtitle is-6">Cards Sold</h4>
-                                <h3 class="title is-5 has-text-primary">{{currentTokenId - gameTokenFloor}}</h3>
+                                <h4 class="subtitle is-6">Pattern</h4>
+                                <h3 class="title is-5 has-text-primary">{{patterns[pattern]}}</h3>
                             </div>
                         </div>
                         <div class="column is-6 has-text-centered">
@@ -40,7 +40,7 @@
                         </div>
                     </div>
 
-                    <div class="box has-text-centered" v-if="gameRound === 5">
+                    <div class="box has-text-centered" v-if="gameRound === 18">
                         <div class="media">
                             <div class="media-left">
                                 <figure class="image is-96x96">
@@ -67,7 +67,11 @@
             />
         </div>
 
-        <div class="section balls-section has-background-black has-text-centered" v-if="isReady">
+        <div class="section balls-section has-background-black has-text-centered" v-if="!startGame">
+            <div class="title has-text-white">Next game starting soon.</div>
+        </div>
+
+        <div class="section balls-section has-background-black has-text-centered" v-if="isReady && startGame">
             <Balls
                 :account="account"
                 :contract="contract"
@@ -77,7 +81,7 @@
             />
         </div>
 
-        <div class="section has-text-centered" v-if="isReady">
+        <div class="section has-text-centered" v-if="isReady && startGame">
             <Mint
                     :account="account"
                     :contract="contract"
@@ -85,8 +89,6 @@
                     :refresh="refresh"
                     v-on:minted="refreshCards"
             />
-            <br />
-            <p class="help">Contract Address: <strong>{{contract.address}}</strong></p>
         </div>
 
         <div class="section has-text-centered" v-if="isReady">
@@ -94,12 +96,15 @@
                     :account="account"
                     :contract="contract"
                     :refresh="refresh"
+                    :graphClient="graphClient"
+                    v-on:claimed="refreshCards"
             />
         </div>
 
         <section class="section has-background-black">
             <About
                 :ballDrawTime="ballDrawTime"
+                :contract="contract"
             />
         </section>
 
@@ -144,12 +149,21 @@ export default {
       refresh: 0,
       refreshBalls: 0,
 
+      startGame: false,
+
       gameRound: '',
       prizePool: '',
       lastBallTime: '',
       ballDrawTime: '',
       gameTokenFloor: '',
       currentTokenId: '',
+      pattern: '',
+      patterns: {
+        1: 'Line',
+        2: 'X',
+        3: 'Full Card',
+        4: 'Four Corners',
+      },
 
       timeUntilNextDraw: 0,
 
@@ -228,6 +242,8 @@ export default {
       this.lastBallTime = parseInt(await this.contract.lastBallTime.call());
       this.ballDrawTime = parseInt(await this.contract.ballDrawTime.call());
       this.gameTokenFloor = parseInt(await this.contract.gameFloor.call());
+      this.pattern = parseInt(await this.contract.pattern.call());
+      this.startGame = await this.contract.startGame.call();
       this.timeUntilDraw();
       this.isReady = true;
     },
@@ -240,7 +256,7 @@ export default {
       setTimeout(this.timeUntilDraw, 1000);
     },
     queryGraph: async function() {
-      const APIURL = "https://api.studio.thegraph.com/query/4841/bingo/v0.0.2";
+      const APIURL = "https://api.studio.thegraph.com/query/4841/bingo/v0.0.9";
       this.graphClient = createClient({
         url: APIURL
       });
