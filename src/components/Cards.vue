@@ -68,11 +68,9 @@
     },
     methods: {
       cardListener: async function(event) {
-        let tokenId = parseInt(event.args.tokenId);
-        for(let i=0; i<this.cards.length; i++) {
-          if(this.cards[i] === tokenId) {
+        let account = event.args.owner;
+        if(this.account === account) {
             setTimeout(this.loadCardsGraph, 5000);
-          }
         }
       },
       claimed: function() {

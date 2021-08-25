@@ -85,6 +85,7 @@
         }
         if(!found) {
           this.balls.push(this.newBall);
+          this.ballDraws[this.newBall] = Date.now() / 1000;
           this.balls.sort(function(a, b) {
             return a - b;
           });

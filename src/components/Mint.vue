@@ -108,6 +108,11 @@
       weedContract: Object,
       refresh: Number
     },
+    watch: {
+      refresh: async function() {
+        this.loadData();
+      }
+    },
     mounted: function() {
       this.loadData();
     },
