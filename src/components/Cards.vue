@@ -8,7 +8,7 @@
             </ul>
         </div>
         <div class="columns is-multiline" v-if="selected === 'current'">
-            <div class="column" v-if="cards.length === 0">You don't have any current cards.  Why don't you go mint some?</div>
+            <div class="column" v-if="cards.length === 0">You don't have any current cards.  Why don't you go mint some?<br />If you have just purchased cards, they will show up here in a few minutes.</div>
             <div class="column is-3" v-for="card in cards" :key="card">
                 <Card
                     :id="parseInt(card)"

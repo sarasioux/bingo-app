@@ -46,6 +46,12 @@
             </div>
         </div>
 
+        <article class="message is-success" v-if="showMintSuccess">
+            <div class="message-body">
+                Your mint was successful!  Newly minted cards will be ready in a few minutes.  Please refresh the page to see them.
+            </div>
+        </article>
+
         <div class="modal" :class="{'is-active':showMintEthModal}">
             <div class="modal-background" @click="showMintEthModal=false"></div>
             <div class="modal-content">
@@ -99,6 +105,7 @@
         showMintEthModal: false,
         showMintWeedModal: false,
         showMintWeedApproved: false,
+        showMintSuccess: false,
         modalMessage: '',
       }
     },
@@ -132,6 +139,7 @@
           try {
             await this.contract.mintCard(this.mintAmount, {value: this.mintAmount * this.pricePerCard * 1e18, from: this.account});
             this.showMintEthModal = false;
+            this.showMintSuccess = true;
             this.mintAmount = '';
             this.$emit('minted');
             this.confetti();
@@ -191,6 +199,9 @@
           }
         }());
       },
+      hideMintSuccess: function() {
+        this.showMintSuccess = false;
+      }
     }
   }
 </script>

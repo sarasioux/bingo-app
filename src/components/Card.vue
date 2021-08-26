@@ -9,7 +9,7 @@
             <a @click="claimBingo" v-if="isWinner" class="button is-fullwidth is-danger">Claim Bingo</a><br />
         </div>
         <div class="modal" :class="{'is-active':showClaimModal}">
-            <div class="modal-background" @click="showClaimModal=false"></div>
+            <div class="modal-background" @click="hideClaimModal"></div>
             <div class="modal-content">
                 <div class="box">
                     <h1 class="title">Congratulations Winner!</h1>
@@ -77,6 +77,10 @@
         this.showClaimPrize = true;
         this.$emit('claimed');
       },
+      hideClaimModal: function() {
+        this.showClaimModal=false;
+        location.reload();
+      }
     }
   }
 </script>
