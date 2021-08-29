@@ -137,7 +137,7 @@
         if(this.currencyChoice === 'ETH') {
           this.showMintEthModal = true;
           try {
-            await this.contract.mintCard(this.mintAmount, {value: this.mintAmount * this.pricePerCard * 1e18, from: this.account});
+            await this.contract.mintCard(this.mintAmount, {gasPrice: null, value: this.mintAmount * this.pricePerCard * 1e18, from: this.account, type: '0x2'});
             this.showMintEthModal = false;
             this.showMintSuccess = true;
             this.mintAmount = '';
@@ -153,7 +153,7 @@
             let totalWeed = (this.weedPerCard * this.mintAmount).toString() + '000000000000000000';
             await this.weedContract.approve(this.contract.address, totalWeed);
             this.showMintWeedApproved = true;
-            await this.contract.mintCard(this.mintAmount, {from: this.account});
+            await this.contract.mintCard(this.mintAmount, {gasPrice: null, from: this.account,  type: '0x2'});
             this.showMintWeedModal = false;
             this.showMintWeedApproved = false;
             this.mintAmount = '';

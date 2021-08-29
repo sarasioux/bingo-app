@@ -1,112 +1,26 @@
 <template>
     <div class="bingo">
-        <div class="section has-background-danger has-background-logo">
-            <div class="columns">
-                <div class="column is-3">
-                    <div class="columns is-mobile" v-if="isReady">
-                        <div class="column is-6 has-text-centered">
-                            <div class="box">
-                                <h4 class="subtitle is-6">Round</h4>
-                                <h3 class="title is-5 has-text-primary">{{gameRound}}</h3>
-                            </div>
-                        </div>
-                        <div class="column is-6 has-text-centered">
-                            <div class="box">
-                                <h4 class="subtitle is-6">Next Draw</h4>
-                                <h3 class="title is-5 has-text-primary" v-if="timeUntilNextDraw > 0">{{timeUntilNextDraw}} secs</h3>
-                                <h3 class="title is-5 has-text-primary" v-if="timeUntilNextDraw < 0">Pending <span class="icon"><i class="fas fa-spinner fa-pulse"></i></span></h3>
-                            </div>
-                        </div>
-                    </div>
-                    <br />
-                    <h1 class="title has-text-centered has-text-white is-4">Welcome to the world's first blockchain based bingo.</h1>
-                </div>
-                <div class="column has-text-centered">
-                    <img src="../public/logo3.png" />
-                </div>
-                <div class="column is-3">
-                    <div class="columns is-mobile" v-if="isReady">
-                        <div class="column is-6 has-text-centered">
-                            <div class="box">
-                                <h4 class="subtitle is-6">Pattern</h4>
-                                <h3 class="title is-5 has-text-primary">{{patterns[pattern]}}</h3>
-                            </div>
-                        </div>
-                        <div class="column is-6 has-text-centered">
-                            <div class="box">
-                                <h4 class="subtitle is-6">Prize Pool</h4>
-                                <h3 class="title is-5 has-text-primary"><span class="icon"><i class="fab fa-ethereum"></i></span>{{prizePool}}</h3>
-                            </div>
-                        </div>
-                    </div>
 
-                    <div class="box has-text-centered" v-if="gameRound === 18">
-                        <div class="media">
-                            <div class="media-left">
-                                <figure class="image is-96x96">
-                                    <img src="./assets/images/rock.png" alt="Stoners Rock">
-                                </figure>
-                            </div>
-                            <div class="media-content">
-                                <h4 class="subtitle is-6">NFT Prize</h4>
-                                <p class="title is-5 has-text-primary">Stoners Rock</p>
-                                <p class="subtitle is-6"><a href="https://twitter.com/mystoners">@mystoners</a></p>
-                            </div>
-                        </div>
-
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <div class="section has-text-centered" v-if="!isReady && isMounted">
-            <Welcome
-                v-on:connect="connectWeb3"
-                :showHelp="showHelp"
-            />
-        </div>
-
-        <div class="section balls-section has-background-black has-text-centered" v-if="!startGame">
-            <div class="title has-text-white">Next game starting soon.</div>
-        </div>
-
-        <div class="section balls-section has-background-black has-text-centered" v-if="isReady && startGame">
-            <Balls
+        <router-view
                 :account="account"
                 :contract="contract"
-                :refreshBalls="refreshBalls"
+                :weedContract="weedContract"
                 :graphClient="graphClient"
-                v-on:newball="refreshCards"
-            />
-        </div>
-
-        <div class="section has-text-centered" v-if="isReady && startGame">
-            <Mint
-                    :account="account"
-                    :contract="contract"
-                    :weedContract="weedContract"
-                    :refresh="refresh"
-                    v-on:minted="refreshCards"
-            />
-        </div>
-
-        <div class="section has-text-centered" v-if="isReady">
-            <Cards
-                    :account="account"
-                    :contract="contract"
-                    :refresh="refresh"
-                    :graphClient="graphClient"
-                    v-on:claimed="refreshCards"
-            />
-        </div>
-
-        <section class="section has-background-black">
-            <About
                 :ballDrawTime="ballDrawTime"
-                :contract="contract"
-            />
-        </section>
+                :refresh="refresh"
+                :refreshBalls="refreshBalls"
+                :refreshCards="refreshCards"
+                :showHelp="showHelp"
+                :gameRound="gameRound"
+                :pattern="pattern"
+                :patterns="patterns"
+                :timeUntilNextDraw="timeUntilNextDraw"
+                :prizePool="prizePool"
+                :startGame="startGame"
+                :balanceOf="balanceOf"
+                :isReady="isReady"
+                v-on:connect="connectWeb3"
+        ></router-view>
 
         <Admin
                 v-if="isReady"
@@ -125,12 +39,7 @@ import BingoContract from '../public/contracts/Bingo.json'
 import WeedContract from '../public/contracts/Weed.json'
 
 import TruffleContract from '@truffle/contract'
-import Mint from './components/Mint'
-import Cards from './components/Cards'
-import Balls from './components/Balls'
 import Admin from './components/Admin'
-import Welcome from './components/Welcome'
-import About from './components/About'
 
 import { createClient } from 'urql';
 
@@ -148,7 +57,7 @@ export default {
       weedContract: {},
       refresh: 0,
       refreshBalls: 0,
-
+      balanceOf: '',
       startGame: false,
 
       gameRound: '',
@@ -173,7 +82,7 @@ export default {
     }
   },
   components: {
-    Mint, Cards, Balls, Admin, Welcome, About
+    Admin
   },
   mounted: async function() {
     if(this.getCookie('connected')) {
@@ -194,6 +103,7 @@ export default {
       return "";
     },
     connectWeb3: async function() {
+      console.log('connecting');
       this.connectionInProgress = true;
       try {
         // Request account access
@@ -243,9 +153,11 @@ export default {
       this.ballDrawTime = parseInt(await this.contract.ballDrawTime.call());
       this.gameTokenFloor = parseInt(await this.contract.gameFloor.call());
       this.pattern = parseInt(await this.contract.pattern.call());
+      this.balanceOf = parseInt(await this.contract.balanceOf.call(this.account));
       this.startGame = await this.contract.startGame.call();
       this.timeUntilDraw();
       this.isReady = true;
+      console.log('balance of', this.balanceOf);
     },
     refreshCards: function() {
       this.refresh = Date.now();
