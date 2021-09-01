@@ -1,252 +1,145 @@
 <template>
-    <div class="console section has-background-danger">
-        <div class="columns is-gapless no-margin">
-            <div class="column nav-col">
-                <h1 class="tagline title has-text-white has-text-centered is-4">The world's first<br />blockchain-based bingo.</h1>
-            </div>
-            <div class="column is-3">
-                <img src="../../public/logo3.png" class="logo" />
-            </div>
-            <div class="column nav-col">
-                <nav class="primary-navbar navbar is-transparent has-background-danger" role="navigation" aria-label="main navigation">
-                    <div class="navbar-brand">
-                        <a role="button" class="navbar-burger has-text-white" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-                            <span aria-hidden="true"></span>
-                            <span aria-hidden="true"></span>
-                            <span aria-hidden="true"></span>
-                        </a>
-                    </div>
+    <div class="console">
 
-                    <div id="navbarBasicExample" class="navbar-menu">
-                        <div class="navbar-start">
-                        </div>
-
-                        <div class="navbar-end">
-                            <a class="navbar-item has-text-primary-light">
-                                Play
-                            </a>
-                            <a class="navbar-item has-text-primary-light">
-                                About
-                            </a>
-                            <a class="navbar-item has-text-primary-light">
-                                Prizes
-                            </a>
-                            <a class="navbar-item has-text-primary-light">
-                                Contact
-                            </a>
-                            &nbsp;
-                            <a class="navbar-item has-text-primary-light">
-                                <span class="icon"><i class="fab fa-2x fa-twitter"></i></span>
-                            </a>
-                            &nbsp;
-                            <a class="navbar-item has-text-primary-light">
-                                <span class="icon"><i class="fab fa-2x fa-discord"></i></span>
-                            </a>
-                        </div>
-                    </div>
-                </nav>
-            </div>
-        </div>
-        <div class="box has-background-primary">
+        <div class="box main-box">
             <div class="columns">
-                <div class="column is-3 game-data">
+                <div class="column is-12" v-if="!isReady && isMounted">
+                    <Welcome
+                            v-on:connect="connectWeb3"
+                            :showHelp="showHelp"
+                    />
+                </div>
+
+                <div class="column is-3 game-data" v-if="isReady">
                     <div class="columns is-multiline is-mobile">
                         <div class="column">
-                            <div class="box has-text-centered">
-                                <div class="has-text-weight-bold">NFT Prize</div>
-                                <figure class="image is-square">
-                                    <img src="https://bulma.io/images/placeholders/128x128.png">
-                                </figure>
-                                <label class="label has-text-primary has-margin">Stoners Rock</label>
-                            </div>
+                            <article class="message is-primary is-small" v-if="showNFT" style="height: 100%">
+                                <div class="message-header">
+                                    <p>NFT Prize</p>
+                                    <a v-tooltip='"NFT prizes are transferred to the winner after claiming a Bingo."'>
+                                        <span class="icon is-small"><i class="fas fa-info-circle is-pulled-right"></i></span>
+                                    </a>
+                                </div>
+                                <div class="message-body">
+                                    <figure class="image is-square">
+                                        <img src="../assets/images/rock.png">
+                                    </figure>
+                                    <label class="label has-text-danger has-margin has-text-centered">Stoners Rock</label>
+                                </div>
+                            </article>
+                            <article class="message is-primary is-small" v-if="!showNFT" style="height: 100%">
+                                <div class="message-header">
+                                    <p>Cash Prize</p>
+                                    <a v-tooltip='"Cash prizes are transferred instantly when claiming a Bingo."'>
+                                        <span class="icon is-small"><i class="fas fa-info-circle is-pulled-right"></i></span>
+                                    </a>
+                                </div>
+                                <div class="message-body has-text-centered">
+                                    <br class="is-hidden-touch is-hidden-desktop" />
+                                    <span class="icon is-large has-text-dark"><i class="fab fa-4x fa-ethereum"></i></span>
+                                    <br /><br />
+                                    <h2 class="title is-5 has-text-danger">{{prizePool}} ETH</h2>
+                                </div>
+                            </article>
                         </div>
                         <div class="column">
-                            <div class="box has-text-centered">
-                                <div class="has-text-weight-bold">Pattern</div>
-                                <figure class="image is-square">
-                                    <img src="https://bulma.io/images/placeholders/128x128.png">
-                                </figure>
-                                <label class="label has-text-primary has-margin">Full Card</label>
-                            </div>
+                            <article class="message is-primary is-small" style="height: 100%">
+                                <div class="message-header">
+                                    <p>Pattern</p>
+                                    <a v-tooltip='"Your card must match pattern shown here in order to claim Bingo."'>
+                                        <span class="icon is-small"><i class="fas fa-info-circle is-pulled-right"></i></span>
+                                    </a>
+                                </div>
+                                <div class="message-body">
+                                    <figure class="image is-square">
+                                        <img :src="'/images/' + patternImgs[pattern]">
+                                    </figure>
+                                    <label class="label has-text-danger has-margin has-text-centered">{{patterns[pattern]}}</label>
+                                </div>
+                            </article>
                         </div>
                         <div class="column is-12">
-                            <div class="box has-text-centered">
-                                <span class="title is-5 has-text-primary has-text-weight-bold">0.025 ETH</span>
-                                <label class="label">Cash Prize</label>
-                            </div>
-                            <div class="box">
-                                <div class="title is-6 half-margin-bottom">
-                                    Game <span class="has-text-primary">#6</span>
+                            <article class="message is-primary is-small">
+                                <div class="message-header">
+                                    <p>Game {{gameRound}}</p>
+                                    <a v-tooltip='"New games start automatically as soon as someone claims a Bingo."'>
+                                        <span class="icon is-small"><i class="fas fa-info-circle is-pulled-right"></i></span>
+                                    </a>
                                 </div>
-                                <div class="columns is-gapless has-text-centered is-mobile half-margin-bottom">
-                                    <div class="column">
-                                        <span class="title is-6 has-text-primary">999</span>
-                                        <label class="label is-small">Remaining</label>
-                                    </div>
-                                    <div class="column">
-                                        <span class="title is-6 has-text-primary">0.025</span>
-                                        <label class="label is-small">Price</label>
-                                    </div>
-                                    <div class="column">
-                                        <span class="title is-6 has-text-primary">4,306,293</span>
-                                        <label class="label is-small">Balance</label>
-                                    </div>
+                                <div class="message-body">
+                                    <Mint
+                                            :account="account"
+                                            :contract="contract"
+                                            :weedContract="weedContract"
+                                            v-on:minted="refreshCards"
+                                    />
                                 </div>
-
-                                <div class="field has-addons">
-                                    <div class="control">
-                                        <div class="select">
-                                            <select v-model="currencyChoice">
-                                                <option>ETH</option>
-                                                <option>WEED</option>
-                                            </select>
-                                        </div>
-
-                                    </div>
-                                    <p class="control is-expanded">
-                                        <input v-model="mintAmount" class="input" type="number" min="1" max="10" step="1" placeholder="# of Cards">
-                                    </p>
-                                </div>
-
-                                <div class="columns is-mobile">
-                                    <div class="column">
-                                        <a class="button is-primary" @click="mint">
-                                            Buy Cards
-                                        </a>
-                                    </div>
-                                    <div class="column has-text-centered">
-                                        <div class="title is-primary is-6 has-text-primary">0.025 ETH</div>
-                                        <div class="subtitle is-7">Total</div>
-                                    </div>
-                                </div>
-                            </div>
-
+                            </article>
                         </div>
                     </div>
                 </div>
                 <div class="column">
-                    <div class="box">
-                        <nav class="navbar" role="navigation" aria-label="main navigation">
-                            <div class="navbar-brand">
-                                <div class="navbar-item">
-                                    <h2 class="title has-text-primary is-5">Your Current Cards</h2>
-                                </div>
 
-                                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
-                                    <span aria-hidden="true"></span>
-                                    <span aria-hidden="true"></span>
-                                    <span aria-hidden="true"></span>
-                                </a>
-                            </div>
+                    <Cards
+                            v-if="isReady"
+                            :account="account"
+                            :contract="contract"
+                            :refresh="refresh"
+                            :graphClient="graphClient"
+                            v-on:claimed="refreshCards"
+                    />
 
-                            <div id="navbarBasicExample" class="navbar-menu">
-                                <div class="navbar-start">
-                                </div>
-
-                                <div class="navbar-end">
-                                    <div class="navbar-item has-dropdown is-hoverable">
-                                        <a class="navbar-link">
-                                            More
-                                        </a>
-
-                                        <div class="navbar-dropdown">
-                                            <a class="navbar-item">
-                                                Your Current Cards
-                                            </a>
-                                            <a class="navbar-item">
-                                                Your Previous Cards
-                                            </a>
-                                            <a class="navbar-item">
-                                                All Current Cards
-                                            </a>
-                                            <a class="navbar-item">
-                                                Previous Games
-                                            </a>
-                                        </div>
-                                    </div>
-
-                                </div>
-                            </div>
-                        </nav>
-                        <div class="is-scrollable">
-                            <div class="columns is-multiline">
-                                <div class="column is-4" v-for="i in 9" :key="i">
-                                    <div class="card">
-                                        <div class="card-image">
-                                            <figure class="image is-square">
-                                                <img src="https://bulma.io/images/placeholders/1280x960.png" alt="Placeholder image">
-                                            </figure>
-                                        </div>
-                                        <footer class="card-footer">
-                                            <div class="card-footer-item">
-                                                <a href="#" class="button is-small is-primary">Claim Bingo</a>
-                                                <!-- <h3 class="title is-6 has-text-centered">Card #1</h3> //-->
-                                            </div>
-
-                                        </footer>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
                 </div>
                 <div class="column is-3">
-                    <div class="box letter-box">
-                        <div class="columns is-mobile">
-                            <div v-for="k in 5" :key="k" class="column">
-                                <div class="label has-text-primary letter is-large">
-                                    {{letters[k]}}
-                                </div>
-                                <div v-for="i in 15" :key="i" class="ball">
-                                    {{i + (k-1)*15}}
-                                </div>
-                            </div>
-                        </div>
-                        <div class="columns is-gapless has-text-centered is-mobile">
-                            <div class="column">
-                                <span class="title is-5 has-text-primary" @click="ballModal=true">B14</span>
-                                <label class="label is-small">Last</label>
-                            </div>
-                            <div class="column">
-                                <span class="title is-5 has-text-primary">34 seconds</span>
-                                <label class="label is-small">Next</label>
-                            </div>
-                        </div>
+                    <div class="box letter-box has-text-centered has-background-primary-light" v-if="isReady">
+                        <Balls
+                                :account="account"
+                                :contract="contract"
+                                :refreshBalls="refreshBalls"
+                                :graphClient="graphClient"
+                                v-on:newball="refreshCards"
+                        />
                     </div>
-
                 </div>
             </div>
-        </div>
-        <div class="modal" :class="{'is-active':ballModal}">
-            <div class="modal-background" @click="ballModal=false"></div>
-            <div class="modal-content has-text-centered">
-                <h2 class="title has-text-white">New Ball Dropping</h2>
-                <div class="fa-10x has-text-primary">
-                    <i class="fas fa-spinner fa-pulse"></i>
-                </div>
-            </div>
-            <button class="modal-close is-large" aria-label="close" @click="ballModal=false"></button>
         </div>
     </div>
 </template>
 
 <script>
+  import Mint from '../components/Mint'
+  import Balls from '../components/Balls'
+  import Cards from '../components/Cards'
+  import Welcome from '../components/Welcome'
+
   export default {
     name: 'Console',
+    components: { Mint, Balls, Cards, Welcome },
     data: function() {
       return {
+        gameRound: '',
         entered: false,
-        numCards: '',
-        letters: {
-          1: 'B',
-          2: 'I',
-          3: 'N',
-          4: 'G',
-          5: 'O'
+        showNFT: false,
+
+        prizePool: 0,
+
+        balls: {
+          36: true
         },
 
-        ballModal: false
+        pattern: '',
+        patterns: {
+          1: 'Line',
+          2: 'X',
+          3: 'Full Card',
+          4: 'Four Corners',
+        },
+        patternImgs: {
+          1: 'line.png',
+          2: 'x.png',
+          3: 'fullcard.png',
+          4: 'fourcorners.png',
+        },
       }
     },
     watch: {
@@ -255,9 +148,18 @@
       }
     },
     props: {
+      isMounted: Boolean,
       isReady: Boolean,
+      showHelp: Boolean,
       contract: Object,
+      weedContract: Object,
+      graphClient: Object,
       account: String,
+      timeUntilNextDraw: Number,
+
+      refreshBalls: Number,
+      refreshCards: Function,
+      refresh: Number,
     },
     mounted: async function() {
       this.loadData();
@@ -265,8 +167,10 @@
     methods: {
       loadData: async function() {
         if(this.contract.address) {
-          this.numCards = parseInt(await this.contract.balanceOf.call(this.account));
-          console.log('numcards', this.numCards);
+          this.pattern = parseInt(await this.contract.pattern.call());
+          this.prizePool = Math.round((parseInt(await this.contract.prizePool.call()) / 1e18)*1000) / 1000;
+          let response = await this.contract.getCurrent.call();
+          this.gameRound = parseInt(response.game);
         }
       },
       connectWeb3: function() {
@@ -282,9 +186,7 @@
         padding: 1em;
     }
 
-    .tag.margin-tag {
-        margin-top: 1em;
-    }
+
     .mint-help {
         padding-left: 1em;
         padding-top: 0.5em;
@@ -307,7 +209,7 @@
         text-align: center;
     }
     .is-scrollable {
-        max-height: 442px;
+        max-height: 90%;
         overflow-y: scroll;
         overflow-x: hidden;
         padding: 0 0.5em;
@@ -316,13 +218,26 @@
     .nav-col {
         padding-top: 2em;
     }
-    .primary-navbar {
-        margin-top: 1em;
-    }
-    .tagline {
-        margin-top: 1em;
-    }
+
+
     .half-margin-bottom {
         margin-bottom: 0.5em;
+    }
+
+    .game-data {
+
+    }
+
+    .ball {
+        font-family: "Source Code Pro";
+    }
+
+    .main-box {
+        background: #0f7094 !important;
+    }
+
+    .ball.is-active {
+        background: #DC2305;
+        color: white;
     }
 </style>

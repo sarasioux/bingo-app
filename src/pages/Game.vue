@@ -1,15 +1,6 @@
 <template>
     <div class="game has-text-centered">
-        <div class="section has-background-danger is-clearfix">
-            <div class="columns">
-                <div class="column">eth logo</div>
-                <div class="column is-2">
-                    <img src="../../public/logo3.png" class="logo" />
-                </div>
-                <div class="column">Bingo Card</div>
-            </div>
-        </div>
-        <div class="section body">
+        <div class="section body has-background-white">
             <div class="container">
                 <div class="columns is-gapless">
                     <div class="column is-1"></div>
@@ -39,33 +30,6 @@
                 </div>
             </div>
         </div>
-        <div class="section">
-            <div class="tabs is-toggle is-centered">
-                <ul>
-                    <li>
-                        <a>
-                            <span>About the Game</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a>
-                            <span>How to Play</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a>
-                            <span>Prizes</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a>
-                            <span>Contact</span>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-
     </div>
 </template>
 

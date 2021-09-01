@@ -8,6 +8,12 @@ const routes = [
     // mode: 'history',
     path: "/",
     name: "Home",
+    component: Console
+  },
+  {
+    // mode: 'history',
+    path: "/oldhome",
+    name: "Old Home",
     component: Home
   },
   {

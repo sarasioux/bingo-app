@@ -1,11 +1,9 @@
 <template>
     <div class="columns">
         <div class="column">
-            <p>Play BINGO to win ETH prizes and NFTs, then watch your finished BINGO cards turn into unique works of art.</p>
-            <br />
             <div class="columns" v-if="showHelp">
                 <div class="column is-half is-offset-one-quarter">
-                    <div class="box">
+                    <div class="box has-text-centered">
                         <h3 class="title is-4">Please Connect a Web3 Browser to Continue</h3>
                         <a href="https://metamask.io/download" target="_blank"><img src="../assets/images/metamask-logo2.png" /></a>
                         <br /><br />
@@ -24,7 +22,10 @@
                     </div>
                 </div>
             </div>
-            <a @click="connectWeb3" class="button is-primary is-large">Connect to Play</a>
+            <figure class="image" v-if="!showHelp">
+                <img src="../assets/images/entrance.png" />
+                <a @click="connectWeb3" class="button is-danger is-medium connect-button">Connect to Play</a>
+            </figure>
         </div>
     </div>
 </template>
@@ -34,6 +35,7 @@
     name: 'Welcome',
     data: function() {
       return {
+        isConnecting: false,
       }
     },
     watch: {
@@ -45,6 +47,7 @@
     },
     methods: {
       connectWeb3: function() {
+        this.isConnecting = true;
         this.$emit('connect');
       }
     }
@@ -52,4 +55,9 @@
 </script>
 
 <style scoped>
+    .connect-button {
+        position: absolute;
+        top: 55%;
+        left: 45%;
+    }
 </style>

@@ -1,5 +1,57 @@
 <template>
-    <div class="bingo">
+    <div class="container">
+
+
+    <div class="bingo section" style="padding: 1em">
+        <div class="columns is-gapless no-margin">
+            <div class="column nav-col">
+                <h1 class="tagline title has-text-white has-text-centered is-4">The world's first<br />blockchain-based bingo.</h1>
+            </div>
+            <div class="column is-2">
+                <figure class="image">
+                    <img src="../public/logo3.png" class="logo" />
+                </figure>
+            </div>
+            <div class="column nav-col">
+                <nav class="primary-navbar navbar is-transparent" role="navigation" aria-label="main navigation">
+                    <div class="navbar-brand">
+                        <a role="button" class="navbar-burger has-text-white" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                            <span aria-hidden="true"></span>
+                            <span aria-hidden="true"></span>
+                            <span aria-hidden="true"></span>
+                        </a>
+                    </div>
+
+                    <div id="navbarBasicExample" class="navbar-menu">
+                        <div class="navbar-start">
+                        </div>
+
+                        <div class="navbar-end">
+                            <router-link to="/" class="navbar-item has-text-primary">
+                                Play
+                            </router-link>
+                            <a class="navbar-item has-text-white">
+                                About
+                            </a>
+                            <a class="navbar-item has-text-white">
+                                Prizes
+                            </a>
+                            <a class="navbar-item has-text-white">
+                                Contact
+                            </a>
+                            <div class="navbar-item"></div>
+                            <a class="navbar-item has-text-primary-light">
+                                <span class="icon"><i class="fab fa-2x fa-twitter"></i></span>
+                            </a>
+                            <div class="navbar-item"></div>
+                            <a class="navbar-item has-text-primary-light">
+                                <span class="icon"><i class="fab fa-2x fa-discord"></i></span>
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+        </div>
 
         <router-view
                 :account="account"
@@ -19,6 +71,7 @@
                 :startGame="startGame"
                 :balanceOf="balanceOf"
                 :isReady="isReady"
+                :isMounted="isMounted"
                 v-on:connect="connectWeb3"
         ></router-view>
 
@@ -29,6 +82,7 @@
                 :weedContract="weedContract"
                 :refresh="refresh"
         />
+    </div>
     </div>
 
 </template>
@@ -85,9 +139,11 @@ export default {
     Admin
   },
   mounted: async function() {
+    /*
     if(this.getCookie('connected')) {
       await this.connectWeb3();
     }
+    */
     this.queryGraph();
     this.isMounted = true;
   },
@@ -157,7 +213,6 @@ export default {
       this.startGame = await this.contract.startGame.call();
       this.timeUntilDraw();
       this.isReady = true;
-      console.log('balance of', this.balanceOf);
     },
     refreshCards: function() {
       this.refresh = Date.now();
@@ -170,7 +225,8 @@ export default {
     queryGraph: async function() {
       const APIURL = "https://api.studio.thegraph.com/query/4841/bingo/v0.0.9";
       this.graphClient = createClient({
-        url: APIURL
+        url: APIURL,
+        requestPolicy: 'network-only'
       });
 
     /*
@@ -220,6 +276,13 @@ export default {
     .playfair {
         font-family: "Playfair Display";
         font-size: 1.4em;
+    }
+
+    .tagline {
+        margin-top: 1rem;
+    }
+    .primary-navbar {
+        margin-top: 1rem;
     }
 
 </style>

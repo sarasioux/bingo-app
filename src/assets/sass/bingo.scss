@@ -2,11 +2,27 @@
 @import "../../../node_modules/bulma/sass/utilities/functions";
 
 @import url('https://fonts.googleapis.com/css?family=Urbanist:500,600,700,800');
+@import url('https://fonts.googleapis.com/css?family=Roboto:wght@400,500,700,900');
 
 $family-primary: Urbanist;
 
-$primary: #DC2305;
+$red: #DC2305;
+$pink: #D91D8A;
+$blue: #15A0D4;
+$light-blue: #80D7F7;
+
+$primary: $blue;
 $link: #026C7C;
-$danger: #8A0005;
+$danger: $pink;
+$info: $blue;
+$link: $light-blue;
+
+$navbar-background-color: transparentize($light-blue, 1);
+
+html {
+  background-image: linear-gradient(#363636, #0a0a0a);
+  background-attachment: fixed;
+  min-height: 100%;
+}
 
 @import "../../../node_modules/bulma/bulma.sass";

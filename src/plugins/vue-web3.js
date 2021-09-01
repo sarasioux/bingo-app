@@ -3,8 +3,9 @@ import Web3 from "web3";
 export default {
   install: async function (app) {
       app.config.globalProperties.$web3 = false;
-      if (!window.ethereum) {
-          return;
+      let provider = window.ethereum;
+      if (!provider) {
+          provider = new Web3.providers.WebsocketProvider("");
       }
       app.config.globalProperties.$web3 = new Web3(window.ethereum);
       app.config.globalProperties.$web3.eth.net

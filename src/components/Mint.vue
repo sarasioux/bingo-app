@@ -1,54 +1,54 @@
 <template>
     <div class="form">
-        <div class="columns">
-            <div class="column is-half is-offset-one-quarter">
-                <div class="box">
-                    <h1 class="title is-3">Buy Bingo Cards</h1>
-                    <div class="columns">
-                        <div class="column">
-                            <p class="subtitle is-6">Price</p>
-                            <p class="title has-text-primary is-4" v-if="currencyChoice === 'ETH'">{{pricePerCard}}</p>
-                            <p class="title has-text-primary is-4" v-if="currencyChoice === 'WEED'">{{weedPerCard}}</p>
-                        </div>
-                        <div class="column">
-                            <p class="subtitle is-6">Mint Limit</p>
-                            <p class="title has-text-primary is-4">{{maxCardPurchase}}</p>
-                        </div>
-                        <div class="column">
-                            <p class="subtitle is-6">Cards Remaining</p>
-                            <p class="title has-text-primary is-4">{{maxCardsPerGame - (currentTokenId - gameTokenFloor)}}</p>
-                        </div>
-                    </div>
-                    <div class="field has-addons">
-                        <div class="control">
-                            <div class="select">
-                              <select v-model="currencyChoice">
-                                <option>ETH</option>
-                                <option>WEED</option>
-                              </select>
-                            </div>
-
-                        </div>
-                        <p class="control is-expanded">
-                            <input v-model="mintAmount" class="input" type="number" min="1" max="10" step="1" placeholder="Amount to Mint">
-                        </p>
-                        <p class="control">
-                            <a class="button is-primary" @click="mint">
-                                Mint
-                            </a>
-                        </p>
-                    </div>
-                    <p class="help">Your Balance:
-                        <strong v-if="currencyChoice === 'ETH'">{{myEthBalance}} {{currencyChoice}}</strong>
-                        <strong v-if="currencyChoice === 'WEED'">{{myWeedBalance}} {{currencyChoice}}</strong>
-                    </p>
+        <div class="columns is-gapless has-text-centered is-mobile half-margin-bottom">
+            <div class="column">
+                <span class="title is-5 has-text-danger">{{maxCardsPerGame - (currentTokenId - gameTokenFloor)}}</span>
+                <label class="label is-small">Remaining</label>
+            </div>
+            <div class="column">
+                <span class="title is-5 has-text-danger" v-if="currencyChoice === 'ETH'">{{pricePerCard}}</span>
+                <span class="title is-5 has-text-danger" v-if="currencyChoice === 'WEED'">{{weedPerCard}}</span>
+                <label class="label is-small">Price</label>
+            </div>
+            <div class="column">
+                <span class="title is-5 has-text-danger" v-if="currencyChoice === 'ETH'">{{myEthBalance}}</span>
+                <span class="title is-5 has-text-danger" v-if="currencyChoice === 'WEED'">{{myWeedBalance}}</span>
+                <label class="label is-small">Balance</label>
+            </div>
+        </div>
+        <div class="field has-addons">
+            <div class="control">
+                <div class="select">
+                  <select v-model="currencyChoice">
+                    <option>ETH</option>
+                    <option>WEED</option>
+                  </select>
                 </div>
+
+            </div>
+            <p class="control is-expanded">
+                <input v-model="mintAmount" class="input" type="number" min="1" max="10" step="1" placeholder="# of Cards">
+            </p>
+        </div>
+
+        <div class="columns is-mobile">
+            <div class="column">
+                <a class="button is-danger" @click="mint">
+                    Buy Cards
+                </a>
+            </div>
+            <div class="column has-text-centered">
+                <div class="title is-primary is-6 has-text-primary">
+                    <span v-if="currencyChoice === 'ETH'">{{pricePerCard * mintAmount}} {{currencyChoice}}</span>
+                    <span v-if="currencyChoice === 'WEED'">{{weedPerCard * mintAmount}} {{currencyChoice}}</span>
+                </div>
+                <div class="subtitle is-7">Total</div>
             </div>
         </div>
 
         <article class="message is-success" v-if="showMintSuccess">
             <div class="message-body">
-                Your mint was successful!  Newly minted cards will be ready in a few minutes.  Please refresh the page to see them.
+                Your mint was successful!  Newly minted cards will be ready in about a minute and should appear automatically.
             </div>
         </article>
 

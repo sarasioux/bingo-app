@@ -1,12 +1,23 @@
 <template>
     <div>
-        <div class="box" :class="{'has-background-primary':isWinner}">
-            <h2 class="title is-5 has-text-left">Card #{{id}} <a @click="loadCard"><span class="icon pull-right"><i class="fas fa-sync-alt"></i></span></a></h2>
-            <figure class="image is-square" v-if="image && !loading">
-                <img :src="image">
-            </figure>
-            <br />
-            <a @click="claimBingo" v-if="isWinner" class="button is-fullwidth is-danger">Claim Bingo</a><br />
+        <div class="card">
+            <div class="card-image">
+                <figure class="image is-square" v-if="image && !loading">
+                    <img :src="image">
+                </figure>
+            </div>
+            <footer class="card-footer">
+                <div class="card-footer-item" v-if="isWinner">
+                    <a @click="claimBingo" class="button is-fullwidth is-small is-danger">Claim Bingo</a><br />
+                </div>
+                <div class="card-footer-item" v-if="!isWinner">
+                    #{{id}}
+                </div>
+                <div class="card-footer-item" v-if="!isWinner">
+                    <a @click="loadCard"><span class="icon pull-right is-small"><i class="fas fa-sync-alt"></i></span></a>
+                </div>
+
+            </footer>
         </div>
         <div class="modal" :class="{'is-active':showClaimModal}">
             <div class="modal-background" @click="hideClaimModal"></div>
