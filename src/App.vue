@@ -8,9 +8,11 @@
                 <h1 class="tagline title has-text-white has-text-centered is-4">The world's first<br />blockchain-based bingo.</h1>
             </div>
             <div class="column is-2">
-                <figure class="image">
-                    <img src="../public/logo3.png" class="logo" />
-                </figure>
+                <router-link to="/">
+                    <figure class="image">
+                        <img src="../public/logo3.png" class="logo" />
+                    </figure>
+                </router-link>
             </div>
             <div class="column nav-col">
                 <nav class="primary-navbar navbar is-transparent" role="navigation" aria-label="main navigation">
@@ -27,24 +29,21 @@
                         </div>
 
                         <div class="navbar-end">
-                            <router-link to="/" class="navbar-item has-text-primary">
+                            <router-link to="/" class="navbar-item has-text-white" :class="{'has-text-primary':$route.path === '/'}">
                                 Play
                             </router-link>
-                            <a class="navbar-item has-text-white">
+                            <router-link to="/about" class="navbar-item has-text-white" :class="{'has-text-primary':$route.path === '/about'}">
                                 About
-                            </a>
-                            <a class="navbar-item has-text-white">
-                                Prizes
-                            </a>
-                            <a class="navbar-item has-text-white">
+                            </router-link>
+                            <a href="mailto:info@scarce.art" class="navbar-item has-text-white">
                                 Contact
                             </a>
                             <div class="navbar-item"></div>
-                            <a class="navbar-item has-text-primary-light">
+                            <a href="https://twitter.com/nftbingo" target="_blank" class="navbar-item has-text-primary-light">
                                 <span class="icon"><i class="fab fa-2x fa-twitter"></i></span>
                             </a>
                             <div class="navbar-item"></div>
-                            <a class="navbar-item has-text-primary-light">
+                            <a href="https://discord.gg/c8pYtQgXxU" target="_blank" class="navbar-item has-text-primary-light">
                                 <span class="icon"><i class="fab fa-2x fa-discord"></i></span>
                             </a>
                         </div>
@@ -75,7 +74,8 @@
                 v-on:connect="connectWeb3"
         ></router-view>
 
-        <p v-if="contract.address" class="help has-text-centered">Contract address: <strong>{{contract.address}}</strong></p>
+        <p v-if="contract.address" class="help has-text-centered has-text-grey">Contract address: <a :href="'https://kovan/etherscan.io/address/' + contract.address" target="_blank">{{contract.address}}</a></p>
+        <p class="help has-text-centered has-text-grey">Brought to you by <a href="https://scarce.art" target="_blank">scarce.art</a>.</p>
         <Admin
                 v-if="isReady"
                 :account="account"
