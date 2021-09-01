@@ -7,13 +7,13 @@
                 </figure>
             </div>
             <footer class="card-footer">
-                <div class="card-footer-item" v-if="isWinner">
+                <div class="card-footer-item" v-if="isWinner && type === 'current'">
                     <a @click="claimBingo" class="button is-fullwidth is-small is-danger">Claim Bingo</a><br />
                 </div>
                 <div class="card-footer-item" v-if="!isWinner">
                     #{{id}}
                 </div>
-                <div class="card-footer-item" v-if="!isWinner">
+                <div class="card-footer-item" v-if="!isWinner && type === 'current'">
                     <a @click="loadCard"><span class="icon pull-right is-small"><i class="fas fa-sync-alt"></i></span></a>
                 </div>
 
@@ -57,7 +57,8 @@
     props: {
       account: String,
       contract: Object,
-      id: Number
+      id: Number,
+      type: String
     },
     mounted: async function() {
       this.loadCard();

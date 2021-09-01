@@ -75,6 +75,7 @@
                 v-on:connect="connectWeb3"
         ></router-view>
 
+        <p v-if="contract.address" class="help has-text-centered">Contract address: <strong>{{contract.address}}</strong></p>
         <Admin
                 v-if="isReady"
                 :account="account"

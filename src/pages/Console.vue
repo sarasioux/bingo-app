@@ -15,7 +15,7 @@
                         <div class="column">
                             <article class="message is-primary is-small" v-if="showNFT" style="height: 100%">
                                 <div class="message-header">
-                                    <p>NFT Prize</p>
+                                    <p>Prize</p>
                                     <a v-tooltip='"NFT prizes are transferred to the winner after claiming a Bingo."'>
                                         <span class="icon is-small"><i class="fas fa-info-circle is-pulled-right"></i></span>
                                     </a>
@@ -29,8 +29,8 @@
                             </article>
                             <article class="message is-primary is-small" v-if="!showNFT" style="height: 100%">
                                 <div class="message-header">
-                                    <p>Cash Prize</p>
-                                    <a v-tooltip='"Cash prizes are transferred instantly when claiming a Bingo."'>
+                                    <p>Prize</p>
+                                    <a v-tooltip='"ETH prizes are transferred instantly when claiming a Bingo."'>
                                         <span class="icon is-small"><i class="fas fa-info-circle is-pulled-right"></i></span>
                                     </a>
                                 </div>

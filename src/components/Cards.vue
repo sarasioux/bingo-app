@@ -41,6 +41,7 @@
                         :id="parseInt(card)"
                         :contract="contract"
                         :account="account"
+                        :type="'current'"
                     />
                 </div>
             </div>
@@ -52,6 +53,7 @@
                             :contract="contract"
                             :account="account"
                             v-on:claimed="claimed"
+                            :type="'previous'"
                     />
                 </div>
             </div>
@@ -127,7 +129,7 @@
         let cards = [];
         let oldCards = [];
         let response = await this.graphClient.query(query).toPromise();
-        if(response.data.owners[0] && response.data.owners[0].tokens.length > 0) {
+        if(response.data && response.data.owners[0] && response.data.owners[0].tokens.length > 0) {
           for(let i=0; i<response.data.owners[0].tokens.length; i++) {
             let token = response.data.owners[0].tokens[i];
             if(parseInt(token.id) > this.gameFloor) {
