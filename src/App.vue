@@ -35,9 +35,6 @@
                             <router-link to="/about" class="navbar-item has-text-white" :class="{'has-text-primary':$route.path === '/about'}">
                                 About
                             </router-link>
-                            <a href="mailto:info@scarce.art" class="navbar-item has-text-white">
-                                Contact
-                            </a>
                             <div class="navbar-item"></div>
                             <a href="https://twitter.com/nftbingo" target="_blank" class="navbar-item has-text-primary-light">
                                 <span class="icon"><i class="fab fa-2x fa-twitter"></i></span>
@@ -75,7 +72,7 @@
                 v-on:connect="connectWeb3"
         ></router-view>
 
-        <p class="help has-text-centered has-text-grey">Brought to you by <a href="https://scarce.art" target="_blank">scarce.art</a>.</p>
+        <p class="has-text-centered has-text-grey"><br />Brought to you by <a href="https://scarce.art" target="_blank">scarce.art</a>.</p>
         <Admin
                 v-if="isReady"
                 :account="account"

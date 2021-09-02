@@ -48,7 +48,7 @@
 
         <article class="message is-success" v-if="showMintSuccess">
             <div class="message-body">
-                Your mint was successful!  Newly minted cards will be ready in about a minute and should appear automatically.
+                Your mint was successful!  Freshly minted cards will be ready in about a minute.
             </div>
         </article>
 
@@ -184,7 +184,7 @@
         }
       },
       confetti: function() {
-        let colors = ['#FD2A00', '#FDFE00', '#19C401'];
+        let colors = ['#FFFFFF', '#D91D8A', '#15A0D4'];
         let end = Date.now() + (3 * 1000);
         (function frame() {
           confetti({

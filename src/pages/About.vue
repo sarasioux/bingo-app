@@ -115,6 +115,10 @@
                         <label>Subgraph</label>
                         <strong><a href="https://thegraph.com/studio/subgraph/bingo/" target="_blank">bingo v.0.0.9</a></strong>
                     </div>
+                    <div class="panel-block">
+                        <label>LINK Balance</label>
+                        <strong>{{linkBalance}}</strong>
+                    </div>
                 </article>
             </div>
             <div class="column">
@@ -124,23 +128,31 @@
                     </p>
                     <div class="panel-block">
                         <label>Ball Draw Time</label>
-                        <strong></strong>
+                        <strong class="has-text-danger">{{ballDrawTime}}</strong>
                     </div>
                     <div class="panel-block">
                         <label>Start Game</label>
-                        <strong></strong>
+                        <strong class="has-text-danger">{{startGame}}</strong>
                     </div>
                     <div class="panel-block">
                         <label>Auto Start Game</label>
-                        <strong></strong>
+                        <strong class="has-text-danger">{{startAuto}}</strong>
                     </div>
                     <div class="panel-block">
                         <label>Min Cards Per Game</label>
-                        <strong></strong>
+                        <strong class="has-text-danger">{{minCardsPerGame}}</strong>
                     </div>
                     <div class="panel-block">
                         <label>Max Cards Per Game</label>
-                        <strong></strong>
+                        <strong class="has-text-danger">{{maxCardsPerGame}}</strong>
+                    </div>
+                    <div class="panel-block">
+                        <label>Price Per Card</label>
+                        <strong class="has-text-danger">{{pricePerCard}}</strong>
+                    </div>
+                    <div class="panel-block">
+                        <label>Prize Split</label>
+                        <strong class="has-text-danger">{{prizeSplit}}</strong>
                     </div>
                 </article>
             </div>
@@ -150,24 +162,67 @@
 </template>
 
 <script>
+
+//  import IERC20 from '../../public/contracts/IERC20.json'
+
   export default {
     name: 'About',
     data: function() {
       return {
+        ballDrawTime: '',
+        minCardsPerGame: '',
+        maxCardsPerGame: '',
+        pricePerCard: '',
+        prizeSplit: '',
+        startGame: false,
+        startAuto: false,
+
+        linkBalance: ''
       }
     },
     watch: {
+      isReady: function() {
+        this.loadData();
+      }
     },
     props: {
-      ballDrawTime: Number,
-      contract: {}
+      contract: {},
+      isReady: Boolean
     },
     mounted: async function() {
+      this.loadData();
     },
     methods: {
       connectWeb3: function() {
         this.$emit('connect');
-      }
+      },
+      loadData: async function() {
+        if(this.contract.address) {
+          this.ballDrawTime = parseInt(await this.contract.ballDrawTime.call());
+          this.minCardsPerGame = parseInt(await this.contract.minCards.call());
+          this.maxCardsPerGame = parseInt(await this.contract.maxCards.call());
+          this.pricePerCard = parseInt(await this.contract.pricePerCard.call()) / 1e18;
+          this.prizeSplit = parseInt(await this.contract.prizeSplit.call());
+          this.startGame = await this.contract.startGame.call();
+          this.startAuto = await this.contract.startAuto.call();
+
+          const minABI = [
+            // balanceOf
+            {
+              constant: true,
+              inputs: [{ name: "_owner", type: "address" }],
+              name: "balanceOf",
+              outputs: [{ name: "balance", type: "uint256" }],
+              type: "function",
+            },
+
+          ];
+
+          let linkAddress = '0xa36085F69e2889c224210F603D836748e7dC0088';
+          let link = new this.$web3.eth.Contract(minABI, linkAddress);
+          this.linkBalance = parseInt(await link.methods.balanceOf(this.contract.address).call()) / 1e18;
+        }
+      },
     }
   }
 </script>
@@ -186,3 +241,4 @@
         font-size: 0.9em;
     }
 </style>
+
