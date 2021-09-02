@@ -24,7 +24,13 @@
             </div>
             <figure class="image" v-if="!showHelp">
                 <img src="../assets/images/entrance.png" />
-                <a @click="connectWeb3" class="button is-danger is-medium connect-button">Connect to Play</a>
+                <a @click="connectWeb3" class="button is-danger is-medium connect-button">
+                    Connect to Play
+                    <span v-if="connectionInProgress">
+                        &nbsp; &nbsp; 
+                        <span class="icon"><i class="fas fa-spinner fa-pulse"></i></span>
+                    </span>
+                </a>
             </figure>
         </div>
     </div>
@@ -41,7 +47,8 @@
     watch: {
     },
     props: {
-      showHelp: Boolean
+      showHelp: Boolean,
+      connectionInProgress: Boolean,
     },
     mounted: async function() {
     },

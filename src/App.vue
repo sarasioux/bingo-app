@@ -8,7 +8,7 @@
                 <h1 class="tagline title has-text-white has-text-centered is-4">The world's first<br />blockchain-based bingo.</h1>
             </div>
             <div class="column is-2">
-                <router-link to="/">
+                <router-link to="/" @click="cardSelection">
                     <figure class="image">
                         <img src="../public/logo3.png" class="logo" />
                     </figure>
@@ -51,7 +51,6 @@
                 </nav>
             </div>
         </div>
-
         <router-view
                 :account="account"
                 :contract="contract"
@@ -71,10 +70,11 @@
                 :balanceOf="balanceOf"
                 :isReady="isReady"
                 :isMounted="isMounted"
+                :resetCardSelection="resetCardSelection"
+                :connectionInProgress="connectionInProgress"
                 v-on:connect="connectWeb3"
         ></router-view>
 
-        <p v-if="contract.address" class="help has-text-centered has-text-grey">Contract address: <a :href="'https://kovan/etherscan.io/address/' + contract.address" target="_blank">{{contract.address}}</a></p>
         <p class="help has-text-centered has-text-grey">Brought to you by <a href="https://scarce.art" target="_blank">scarce.art</a>.</p>
         <Admin
                 v-if="isReady"
@@ -112,6 +112,7 @@ export default {
       weedContract: {},
       refresh: 0,
       refreshBalls: 0,
+      resetCardSelection: 0,
       balanceOf: '',
       startGame: false,
 
@@ -169,9 +170,9 @@ export default {
         let networkId = await this.$web3.eth.net.getId();
         switch (networkId) {
             case 42:
-                this.connectionInProgress = false;
                 document.cookie = "connected=true";
                 await this.initContracts();
+                this.connectionInProgress = false;
                 this.isConnected = true;
                 break;
             default:
@@ -214,6 +215,9 @@ export default {
       this.startGame = await this.contract.startGame.call();
       this.timeUntilDraw();
       this.isReady = true;
+    },
+    cardSelection: function() {
+      this.resetCardSelection = Date.now();
     },
     refreshCards: function() {
       this.refresh = Date.now();

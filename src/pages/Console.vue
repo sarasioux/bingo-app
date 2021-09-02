@@ -7,6 +7,7 @@
                     <Welcome
                             v-on:connect="connectWeb3"
                             :showHelp="showHelp"
+                            :connectionInProgress="connectionInProgress"
                     />
                 </div>
 
@@ -86,6 +87,8 @@
                             :contract="contract"
                             :refresh="refresh"
                             :graphClient="graphClient"
+                            :isReady="isReady"
+                            :resetCardSelection="resetCardSelection"
                             v-on:claimed="refreshCards"
                     />
 
@@ -156,6 +159,8 @@
       graphClient: Object,
       account: String,
       timeUntilNextDraw: Number,
+      resetCardSelection: Number,
+      connectionInProgress: Boolean,
 
       refreshBalls: Number,
       refreshCards: Function,

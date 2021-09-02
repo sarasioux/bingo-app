@@ -32,10 +32,15 @@
             </div>
         </div>
         <div class="message-body">
-
             <div class="columns is-multiline" v-if="selected === 'current'">
-                <div class="column" v-if="cards.length === 0 && balanceOf === oldCards.length">You don't have any current cards.  Why don't you go mint some?</div>
-                <div class="column" v-if="cards.length === 0 && balanceOf > oldCards.length">Your freshly minted cards will appear here shortly.</div>
+                <div class="column" v-if="cards.length === 0 && balanceOf === oldCards.length && cardsLoaded">
+                    <p class="is-size-5 has-text-centered">You don't have any current cards.<br />Why don't you go buy some?</p><br />
+                    <figure class="image"><img src="../assets/images/bingohost.png" /></figure>
+                </div>
+                <div class="column" v-if="cards.length === 0 && balanceOf > oldCards.length && cardsLoaded">
+                    <p class="is-size-5 has-text-centered">Your freshly minted cards will appear here shortly.</p><br />
+                    <figure class="image"><img src="../assets/images/mildred.jpg" /></figure>
+                </div>
                 <div class="column is-4" v-for="card in cards" :key="card">
                     <Card
                         :id="parseInt(card)"
@@ -46,8 +51,11 @@
                 </div>
             </div>
             <div class="columns is-multiline" v-if="selected === 'previous'">
-                <div class="column" v-if="oldCards.length === 0">You don't have any previous cards.  When a game ends they'll show up here.</div>
-                <div class="column is-4" v-for="card in oldCards" :key="card">
+                <div class="column" v-if="oldCards.length === 0 && cardsLoaded">
+                    <p class="is-size-5 has-text-centered">You don't have any previous cards.<br />When a game ends they'll show up here.</p><br />
+                    <figure class="image"><img src="../assets/images/bill.jpg" /></figure>
+                </div>
+                <div class="column is-3" v-for="card in oldCards" :key="card">
                     <Card
                             :id="parseInt(card)"
                             :contract="contract"
@@ -58,10 +66,12 @@
                 </div>
             </div>
             <div v-if="selected === 'all'">
-                All cards coming soon.
+                <p class="is-size-5 has-text-centered">All cards coming soon.</p><br />
+                <figure class="image"><img src="../assets/images/mildred.jpg" /></figure>
             </div>
             <div v-if="selected === 'games'">
-                Game History coming soon.
+                <p class="is-size-5 has-text-centered">Game History coming soon.</p><br />
+                <figure class="image"><img src="../assets/images/mildred.jpg" /></figure>
             </div>
         </div>
     </article>
@@ -81,6 +91,7 @@
         oldCards: [],
         balanceOf: 0,
         cardsPending: false,
+        cardsLoaded: false,
       }
     },
     components: {
@@ -89,13 +100,18 @@
     watch: {
       refresh: async function() {
         this.loadCardsGraph();
+      },
+      resetCardSelection: async function() {
+        this.selected = 'current';
       }
     },
     props: {
       account: String,
       contract: Object,
       refresh: Number,
-      graphClient: Object
+      graphClient: Object,
+      resetCardSelection: Number,
+      isReady: Boolean
     },
     mounted: async function() {
         let response = await this.contract.getCurrent.call();
@@ -152,6 +168,7 @@
           this.cardsPending = true;
           setTimeout(this.loadCardsGraph, 5000);
         }
+        this.cardsLoaded = true;
       }
     }
   }
