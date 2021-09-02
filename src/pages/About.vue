@@ -1,6 +1,18 @@
 <template>
     <div class="box has-background-black">
 
+        <h1 class="title has-text-primary has-text-centered">How to Play</h1>
+        <div class="columns">
+            <div class="column is-half is-offset-one-quarter">
+                <div class="box">
+                    1.  Buy Bingo card NFTs.<br />
+                    2.  Wait for Bingo Balls to fill up your card.<br />
+                    3.  Click the Claim button to win cash and prizes.<br />
+                    5.  All Bingo cards turn into art when a game ends.<br />
+                </div>
+            </div>
+        </div>
+
         <h1 class="title has-text-primary">About the Game</h1>
         <div class="columns">
             <div class="column">

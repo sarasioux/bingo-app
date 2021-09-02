@@ -13,7 +13,7 @@
                 <div class="card-footer-item" v-if="!isWinner">
                     #{{id}}
                 </div>
-                <div class="card-footer-item" v-if="!isWinner && type === 'current'">
+                <div class="card-footer-item" v-if="!isWinner">
                     <a @click="loadCard"><span class="icon pull-right is-small"><i class="fas fa-sync-alt"></i></span></a>
                 </div>
 

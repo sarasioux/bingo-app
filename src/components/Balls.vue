@@ -171,7 +171,7 @@
         }
       },
       ballLetter: function(num) {
-        return this.letters[Math.round(num / 15) + 1];
+        return this.letters[Math.round(num / 15)];
       },
       timeUntilDraw: function() {
         this.timeUntilNextDraw = Math.round(((this.lastBallTime*1000 + this.ballDrawTime*1000) - Date.now()) / 1000);
