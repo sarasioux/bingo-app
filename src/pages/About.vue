@@ -4,11 +4,11 @@
         <h1 class="title has-text-primary has-text-centered">How to Play</h1>
         <div class="columns">
             <div class="column is-half is-offset-one-quarter">
-                <div class="box">
-                    1.  Buy Bingo card NFTs.<br />
-                    2.  Wait for Bingo Balls to fill up your card.<br />
-                    3.  Click the Claim button to win cash and prizes.<br />
-                    5.  All Bingo cards turn into art when a game ends.<br />
+                <div class="box is-size-5">
+                    <span class="tag is-large is-rounded is-danger" style="margin-bottom: 0.5em; width: 2em;">1</span> &nbsp; Buy <strong>Bingo Card</strong> NFTs with ETH or $WEED from <a href="https://stonersrock.com">Rocks</a>.<br />
+                    <span class="tag is-large is-rounded is-danger" style="margin-bottom: 0.5em; width: 2em;">2</span> &nbsp; Wait for <strong>Bingo Balls</strong> to fill up your card.<br />
+                    <span class="tag is-large is-rounded is-danger" style="margin-bottom: 0.5em; width: 2em;">3</span> &nbsp; Click the <strong>Claim Bingo</strong> button to win cash and prizes.<br />
+                    <span class="tag is-large is-rounded is-danger" style="margin-bottom: 0.5em; width: 2em;">4</span> &nbsp; All cards turn into <strong>Bingo Art</strong> when their game ends.<br />
                 </div>
             </div>
         </div>
@@ -111,60 +111,60 @@
         </h1>
         <div class="columns">
             <div class="column">
-                <article class="panel is-primary has-background-white">
+                <article class="panel is-danger has-background-white">
                     <p class="panel-heading">
                         Contract
                     </p>
                     <div class="panel-block">
                         <label>Contract Address</label>
-                        <strong><a :href="'https://kovan.etherscan.io/address/' + contract.address + '#code'" target="_blank">{{contract.address}}</a></strong>
+                        <strong style="text-decoration: underline"><a :href="'https://kovan.etherscan.io/address/' + contract.address + '#code'" target="_blank">{{contract.address}}</a></strong>
                     </div>
                     <div class="panel-block">
                         <label>Chainlink Keeper</label>
-                        <strong><a href="https://keepers.chain.link/kovan/upkeeps/530" target="_blank">bingoball8 - 530</a></strong>
+                        <strong style="text-decoration: underline"><a href="https://keepers.chain.link/kovan/upkeeps/530" target="_blank">bingoball8 - 530</a></strong>
                     </div>
                     <div class="panel-block">
                         <label>Subgraph</label>
-                        <strong><a href="https://thegraph.com/studio/subgraph/bingo/" target="_blank">bingo v.0.0.9</a></strong>
+                        <strong style="text-decoration: underline"><a href="https://thegraph.com/studio/subgraph/bingo/" target="_blank">bingo v.0.0.9</a></strong>
                     </div>
                     <div class="panel-block">
                         <label>LINK Balance</label>
-                        <strong>{{linkBalance}}</strong>
+                        <strong class="has-text-primary">{{linkBalance}}</strong>
                     </div>
                 </article>
             </div>
             <div class="column">
-                <article class="panel is-primary has-background-white">
+                <article class="panel is-danger has-background-white">
                     <p class="panel-heading">
                         Settings
                     </p>
                     <div class="panel-block">
                         <label>Ball Draw Time</label>
-                        <strong class="has-text-danger">{{ballDrawTime}}</strong>
+                        <strong class="has-text-primary">{{ballDrawTime}}</strong>
                     </div>
                     <div class="panel-block">
                         <label>Start Game</label>
-                        <strong class="has-text-danger">{{startGame}}</strong>
+                        <strong class="has-text-primary">{{startGame}}</strong>
                     </div>
                     <div class="panel-block">
                         <label>Auto Start Game</label>
-                        <strong class="has-text-danger">{{startAuto}}</strong>
+                        <strong class="has-text-primary">{{startAuto}}</strong>
                     </div>
                     <div class="panel-block">
                         <label>Min Cards Per Game</label>
-                        <strong class="has-text-danger">{{minCardsPerGame}}</strong>
+                        <strong class="has-text-primary">{{minCardsPerGame}}</strong>
                     </div>
                     <div class="panel-block">
                         <label>Max Cards Per Game</label>
-                        <strong class="has-text-danger">{{maxCardsPerGame}}</strong>
+                        <strong class="has-text-primary">{{maxCardsPerGame}}</strong>
                     </div>
                     <div class="panel-block">
                         <label>Price Per Card</label>
-                        <strong class="has-text-danger">{{pricePerCard}}</strong>
+                        <strong class="has-text-primary">{{pricePerCard}}</strong>
                     </div>
                     <div class="panel-block">
                         <label>Prize Split</label>
-                        <strong class="has-text-danger">{{prizeSplit}}</strong>
+                        <strong class="has-text-primary">{{prizeSplit}}</strong>
                     </div>
                 </article>
             </div>
