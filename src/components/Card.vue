@@ -6,6 +6,11 @@
                     <img :src="image">
                 </figure>
             </div>
+            <div class="card-content" v-if="type==='all'">
+                <p class="subtitle is-6 has-text-centered">
+                    <a :href="'https://opensea.io/' + ownerOf">{{formatOwner()}}</a>
+                </p>
+            </div>
             <footer class="card-footer">
                 <div class="card-footer-item" v-if="isWinner && type === 'current'">
                     <a @click="claimBingo" class="button is-fullwidth is-small is-danger">Claim Bingo</a><br />
@@ -16,7 +21,6 @@
                 <div class="card-footer-item" v-if="!isWinner">
                     <a @click="loadCard"><span class="icon pull-right is-small"><i class="fas fa-sync-alt"></i></span></a>
                 </div>
-
             </footer>
         </div>
         <div class="modal" :class="{'is-active':showClaimModal}">
@@ -38,6 +42,7 @@
     name: 'Card',
     data: function() {
       return {
+        ownerOf: '',
         gameRound: '',
         gameFloor: '',
         randomness: '',
@@ -71,6 +76,10 @@
         this.gameFloor = parseInt(await this.contract.gameFloor.call());
         this.randomness = parseInt(await this.contract.cardRandomness(this.id));
 
+        if(this.type === 'all') {
+          this.ownerOf = await this.contract.ownerOf.call(this.id);
+        }
+
         if(this.id > this.gameFloor) {
           this.isCurrent = true;
           this.isWinner = await this.contract.validateCard(this.id);
@@ -92,6 +101,9 @@
       hideClaimModal: function() {
         this.showClaimModal=false;
         location.reload();
+      },
+      formatOwner: function() {
+        return this.ownerOf.substr(0,5) + '...' + this.ownerOf.substr(this.ownerOf.length - 5, 5);
       }
     }
   }

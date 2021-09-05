@@ -46,7 +46,7 @@
             </div>
         </div>
 
-        <article class="message is-success" v-if="showMintSuccess">
+        <article class="message is-danger" v-if="showMintSuccess">
             <div class="message-body">
                 Your mint was successful!  Freshly minted cards will be ready in about a minute.
             </div>

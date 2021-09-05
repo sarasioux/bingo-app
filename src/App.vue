@@ -17,14 +17,22 @@
             <div class="column nav-col">
                 <nav class="primary-navbar navbar is-transparent" role="navigation" aria-label="main navigation">
                     <div class="navbar-brand">
-                        <a role="button" class="navbar-burger has-text-white" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
+                        <a
+                            role="button"
+                            class="navbar-burger has-text-white"
+                            aria-label="menu"
+                            aria-expanded="false"
+                            data-target="navbarBasicExample"
+                            @click="navbarActive=(navbarActive===false)"
+                            :class="{'is-active':navbarActive}"
+                        >
                             <span aria-hidden="true"></span>
                             <span aria-hidden="true"></span>
                             <span aria-hidden="true"></span>
                         </a>
                     </div>
 
-                    <div id="navbarBasicExample" class="navbar-menu">
+                    <div id="navbarBasicExample" class="navbar-menu" :class="{'is-active':navbarActive}">
                         <div class="navbar-start">
                         </div>
 
@@ -112,6 +120,7 @@ export default {
       resetCardSelection: 0,
       balanceOf: '',
       startGame: false,
+      navbarActive: false,
 
       gameRound: '',
       prizePool: '',

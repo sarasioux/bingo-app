@@ -16,7 +16,7 @@
             </div>
         </div>
         <div class="columns is-gapless has-text-centered is-mobile" style="margin-bottom: 0">
-            <div class="column">
+            <div class="column" @click="ballModal=true">
                 <span class="title is-5 has-text-danger" v-if="newBall === 0">--</span>
                 <span class="title is-5 has-text-danger" v-if="newBall > 0">{{ballLetter(newBall)}}{{newBall}}</span>
                 <label class="label is-small">Last</label>
@@ -38,9 +38,18 @@
             <div class="modal-background" @click="ballModal=false"></div>
             <div class="modal-content has-text-centered">
                 <h2 class="title has-text-white">New Ball Dropping</h2>
-                <div class="fa-10x has-text-primary">
-                    <i class="fas fa-spinner fa-pulse"></i>
+                <div class="columns">
+                    <div class="column is-one-third is-offset-one-third">
+                        <div class="box">
+                            <figure class="image is-square">
+                                <span v-if="!ballSpinning" class="static-ball">{{newBall}}</span>
+                                <img src="../assets/images/static-ball.png" v-if="!ballSpinning" />
+                                <img src="../assets/images/spinning-ball.gif" v-if="ballSpinning" />
+                            </figure>
+                        </div>
+                    </div>
                 </div>
+
             </div>
             <button class="modal-close is-large" aria-label="close" @click="ballModal=false"></button>
         </div>
@@ -64,6 +73,8 @@
         ballDraws: {},
         ballModal: false,
         gameStarted: false,
+
+        ballSpinning: true,
 
         lastBallDrawTime: '',
         ballDrawTime: '',
@@ -137,7 +148,6 @@
         }
       },
       ballListener: async function(event) {
-        console.log('ball listener', event);
         this.newBall = parseInt(event.args.ball);
         let found = false;
         for(let i=0; i<this.balls.length; i++) {
@@ -152,8 +162,9 @@
             return a - b;
           });
           this.$emit('newball');
+          this.ballSpinning = true;
           this.ballModal = true;
-          setTimeout(this.hideBallModal, 3000);
+          setTimeout(this.showBall, 2000);
         }
       },
       formatTime: function(num) {
@@ -177,6 +188,9 @@
         this.timeUntilNextDraw = Math.round(((this.lastBallTime*1000 + this.ballDrawTime*1000) - Date.now()) / 1000);
         setTimeout(this.timeUntilDraw, 1000);
       },
+      showBall: function() {
+        this.ballSpinning = false;
+      },
       hideBallModal: function() {
         this.ballModal = false;
       }
@@ -190,5 +204,12 @@
         font-family: "Source Code Pro";
         margin-bottom: 0.2em;
         border-radius: 4px;
+    }
+    .static-ball {
+        font-family: "Source Code Pro";
+        position: absolute;
+        left: 25px;
+        top: 15px;
+        font-size: 4em;
     }
 </style>

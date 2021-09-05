@@ -5,7 +5,7 @@
             <p v-if="selected === 'previous'">Your Previous Cards</p>
             <p v-if="selected === 'all'">All Cards</p>
             <p v-if="selected === 'games'">Previous Games</p>
-            <div class="dropdown is-pulled-right is-hoverable is-right">
+            <div class="dropdown is-pulled-right is-right" @click="dropdownActive=(dropdownActive===false)" :class="{'is-active':dropdownActive}">
                 <div class="dropdown-trigger">
                     <a aria-haspopup="true" aria-controls="dropdown-menu3" style="text-decoration: none;">
                         <span class="icon">
@@ -65,9 +65,15 @@
                     />
                 </div>
             </div>
-            <div v-if="selected === 'all'">
-                <p class="is-size-5 has-text-centered">All cards coming soon.</p><br />
-                <figure class="image"><img src="../assets/images/mildred.jpg" /></figure>
+            <div class="columns is-multiline" v-if="selected === 'all'">
+                <div class="column is-4" v-for="card in currentCards()" :key="card">
+                    <Card
+                            :id="parseInt(card)"
+                            :contract="contract"
+                            :account="account"
+                            :type="'all'"
+                    />
+                </div>
             </div>
             <div v-if="selected === 'games'">
                 <p class="is-size-5 has-text-centered">Game History coming soon.</p><br />
@@ -86,12 +92,14 @@
       return {
         selected: 'current',
         gameRound: '',
+        currentTokenId: '',
         gameFloor: '',
         cards: [],
         oldCards: [],
         balanceOf: 0,
         cardsPending: false,
         cardsLoaded: false,
+        dropdownActive: false
       }
     },
     components: {
@@ -116,6 +124,7 @@
     mounted: async function() {
         let response = await this.contract.getCurrent.call();
         this.gameRound = parseInt(response.game);
+        this.currentTokenId = parseInt(response.token);
         this.gameFloor = parseInt(await this.contract.gameFloor.call());
         await this.loadCardsGraph();
         this.contract.CardGenerated().on('data', this.cardListener);
@@ -129,6 +138,13 @@
       },
       claimed: function() {
         this.$emit('claimed');
+      },
+      currentCards: function() {
+        let cards = [];
+        for(let i=this.currentTokenId; i>this.gameFloor+1; i--) {
+          cards.push(i);
+        }
+        return cards;
       },
       loadCardsGraph: async function() {
         this.balanceOf = parseInt(await this.contract.balanceOf.call(this.account));
