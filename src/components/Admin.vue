@@ -181,9 +181,10 @@
         this.startAuto = await this.contract.startAuto.call();
       },
       saveSettings: async function() {
+        console.log('settings', this.startGame, this.startAuto, this.ballDrawTime, this.minCardsPerGame, this.maxCardsPerGame, this.pricePerCard, this.prizeSplit, this.pattern);
         await this.contract.contractSettings(
-          this.startGame,
-          this.startAuto,
+          String(this.startGame),
+          String(this.startAuto),
           this.ballDrawTime,
           this.minCardsPerGame,
           this.maxCardsPerGame,

@@ -25,7 +25,7 @@
             <figure class="image" v-if="!showHelp">
                 <div class="is-hidden-tablet has-text-centered">
                     <a @click="connectWeb3" class="button is-danger is-medium">
-                        Connect to Play
+                        Connect to Play &nbsp; &nbsp;
                         <span v-if="connectionInProgress">
                             <span class="icon"><i class="fas fa-spinner fa-pulse"></i></span>
                         </span>
@@ -34,7 +34,7 @@
                 </div>
                 <img src="../assets/images/entrance.png" />
                 <a @click="connectWeb3" class="button is-danger is-medium connect-button is-hidden-mobile">
-                    Connect to Play
+                    Connect to Play &nbsp; &nbsp;
                     <span v-if="connectionInProgress">
                         <span class="icon"><i class="fas fa-spinner fa-pulse"></i></span>
                     </span>

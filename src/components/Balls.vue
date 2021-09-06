@@ -16,14 +16,15 @@
             </div>
         </div>
         <div class="columns is-gapless has-text-centered is-mobile" style="margin-bottom: 0">
-            <div class="column" @click="ballModal=true">
+            <div class="column" @click="ballModal=(ballModal===false)">
                 <span class="title is-5 has-text-danger" v-if="newBall === 0">--</span>
                 <span class="title is-5 has-text-danger" v-if="newBall > 0">{{ballLetter(newBall)}}{{newBall}}</span>
                 <label class="label is-small">Last</label>
             </div>
             <div class="column" v-if="gameStarted">
                 <span class="title is-5 has-text-danger" v-if="timeUntilNextDraw > 0">{{timeUntilNextDraw}} seconds</span>
-                <span class="title is-5 has-text-danger" v-if="timeUntilNextDraw < 0 && balls.length < 75">Pending <span class="icon"><i class="fas fa-spinner fa-pulse"></i></span></span>
+                <span class="title is-5 has-text-danger" v-if="timeUntilNextDraw < 0 && balls.length < 75 && checkUpkeep">Pending <span class="icon"><i class="fas fa-spinner fa-pulse"></i></span></span>
+                <span class="title is-5 has-text-danger" v-if="timeUntilNextDraw < 0 && balls.length < 75 && !checkUpkeep">Waiting <span class="icon"><i class="fas fa-spinner fa-pulse"></i></span></span>
                 <span class="title is-5 has-text-danger" v-if="timeUntilNextDraw < 0 && balls.length >= 75">All Drawn</span>
                 <label class="label is-small">Next</label>
             </div>
@@ -34,25 +35,32 @@
                 <label class="label is-small">Next</label>
             </div>
         </div>
-        <div class="modal" :class="{'is-active':ballModal}">
-            <div class="modal-background" @click="ballModal=false"></div>
-            <div class="modal-content has-text-centered">
-                <h2 class="title has-text-white">New Ball Dropping</h2>
-                <div class="columns">
-                    <div class="column is-one-third is-offset-one-third">
-                        <div class="box">
-                            <figure class="image is-square">
-                                <span v-if="!ballSpinning" class="static-ball">{{newBall}}</span>
-                                <img src="../assets/images/static-ball.png" v-if="!ballSpinning" />
-                                <img src="../assets/images/spinning-ball.gif" v-if="ballSpinning" />
-                            </figure>
-                        </div>
-                    </div>
-                </div>
 
-            </div>
-            <button class="modal-close is-large" aria-label="close" @click="ballModal=false"></button>
+        <div class="has-text-centered" v-if="ballModal">
+            <h2 class="title is-4">New Ball Dropping</h2>
+            <div v-if="!ballSpinning" class="title is-1 static-ball">{{newBall}}</div>
+            <figure class="image is-128x128 is-inline-block" v-if="ballSpinning">
+                <img src="../assets/images/spinning-ball.gif" />
+            </figure>
         </div>
+
+        <!--
+        <div class="stats help has-text-left">
+            <br />
+            Last Ball Draw Time:
+            <strong>{{formatTime(lastBallTime)}}</strong>
+            <br />
+            Ball Draw Time:
+            <strong>{{ballDrawTime}}</strong>
+            <br />
+            Random Request ID:
+            <strong>{{formatRequest(ballRequest)}}</strong>
+            <br />
+            Needs Upkeep:
+            <strong>{{checkUpkeep}}</strong>
+        </div>
+        //-->
+
     </div>
 </template>
 
@@ -76,8 +84,11 @@
 
         ballSpinning: true,
 
-        lastBallDrawTime: '',
+        lastBallTime: '',
         ballDrawTime: '',
+        ballRequest: '',
+        checkUpkeep: false,
+
         timeUntilNextDraw: '',
 
         letters: {
@@ -105,6 +116,7 @@
     mounted: async function() {
         this.loadBalls();
         this.contract.BallPicked().on('data', this.ballListener);
+        setTimeout(this.monitorBallDrop, 5000);
     },
     methods: {
       loadBalls: async function() {
@@ -136,8 +148,7 @@
           return a - b;
         });
 
-        this.lastBallTime = parseInt(await this.contract.lastBallTime.call());
-        this.ballDrawTime = parseInt(await this.contract.ballDrawTime.call());
+        await this.loadDrawTimes();
         this.timeUntilDraw();
 
         this.minCardsPerGame = parseInt(await this.contract.minCards.call());
@@ -147,7 +158,15 @@
           this.gameStarted = true;
         }
       },
+      loadDrawTimes: async function() {
+        this.lastBallTime = parseInt(await this.contract.lastBallTime.call());
+        this.ballDrawTime = parseInt(await this.contract.ballDrawTime.call());
+        this.ballRequest = await this.contract.ballRequest.call();
+        let response = await this.contract.checkUpkeep.call('0x0');
+        this.checkUpkeep = response.upkeepNeeded;
+      },
       ballListener: async function(event) {
+        console.log('New Ball Event', event);
         this.newBall = parseInt(event.args.ball);
         let found = false;
         for(let i=0; i<this.balls.length; i++) {
@@ -161,10 +180,11 @@
           this.balls.sort(function(a, b) {
             return a - b;
           });
+          await this.loadDrawTimes();
           this.$emit('newball');
           this.ballSpinning = true;
           this.ballModal = true;
-          setTimeout(this.showBall, 2000);
+          setTimeout(this.showBall, 3000);
         }
       },
       formatTime: function(num) {
@@ -173,6 +193,9 @@
         } else {
           return '--';
         }
+      },
+      formatRequest: function(word) {
+        return word.substr(0, 5);
       },
       ballSelected: function(num) {
         for(let i=0; i<this.balls.length; i++) {
@@ -186,13 +209,21 @@
       },
       timeUntilDraw: function() {
         this.timeUntilNextDraw = Math.round(((this.lastBallTime*1000 + this.ballDrawTime*1000) - Date.now()) / 1000);
+        if(this.timeUntilNextDraw <= 0) {
+          this.loadDrawTimes();
+        }
         setTimeout(this.timeUntilDraw, 1000);
       },
       showBall: function() {
         this.ballSpinning = false;
+        setTimeout(this.hideBallModal, 6000);
       },
       hideBallModal: function() {
         this.ballModal = false;
+      },
+      monitorBallDrop: async function() {
+        this.loadDrawTimes();
+        setTimeout(this.monitorBallDrop, 2000);
       }
 
     }
@@ -207,9 +238,5 @@
     }
     .static-ball {
         font-family: "Source Code Pro";
-        position: absolute;
-        left: 25px;
-        top: 15px;
-        font-size: 4em;
     }
 </style>
