@@ -66,7 +66,7 @@
                 </div>
             </div>
             <div class="columns is-multiline" v-if="selected === 'all'">
-                <div class="column is-4" v-for="card in currentCards()" :key="card">
+                <div class="column is-3" v-for="card in currentCards()" :key="card">
                     <Card
                             :id="parseInt(card)"
                             :contract="contract"
@@ -131,6 +131,7 @@
     },
     methods: {
       cardListener: async function(event) {
+        console.log('New Card Event', event);
         let account = event.args.owner;
         if(this.account === account) {
             setTimeout(this.loadCardsGraph, 5000);

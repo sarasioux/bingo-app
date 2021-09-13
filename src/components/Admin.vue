@@ -156,8 +156,8 @@
         prizeSplit: '',
         ballRequest: '',
         pattern: '',
-        startGame: false,
-        startAuto: false,
+        startGame: '',
+        startAuto: '',
       }
     },
     props: {
@@ -181,10 +181,19 @@
         this.startAuto = await this.contract.startAuto.call();
       },
       saveSettings: async function() {
-        console.log('settings', this.startGame, this.startAuto, this.ballDrawTime, this.minCardsPerGame, this.maxCardsPerGame, this.pricePerCard, this.prizeSplit, this.pattern);
+        let startGame = this.startGame;
+        let startAuto = this.startAuto;
+        if(startGame === "false") {
+          startGame = 0;
+        }
+        if(startAuto === "false") {
+          startAuto = 0;
+        }
+        console.log('settings', startGame, startAuto, this.ballDrawTime, this.minCardsPerGame, this.maxCardsPerGame, this.pricePerCard, this.prizeSplit, this.pattern);
+
         await this.contract.contractSettings(
-          String(this.startGame),
-          String(this.startAuto),
+          startGame,
+          startAuto,
           this.ballDrawTime,
           this.minCardsPerGame,
           this.maxCardsPerGame,

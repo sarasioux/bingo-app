@@ -55,6 +55,7 @@
         showClaimPrize: false,
         prizePool: 0,
         loading: false,
+        winAmount: 0,
       }
     },
     watch: {
@@ -74,7 +75,6 @@
         let response = await this.contract.getCurrent.call();
         this.gameRound = parseInt(response.game);
         this.gameFloor = parseInt(await this.contract.gameFloor.call());
-        this.randomness = parseInt(await this.contract.cardRandomness(this.id));
 
         if(this.type === 'all') {
           this.ownerOf = await this.contract.ownerOf.call(this.id);
@@ -82,8 +82,10 @@
 
         if(this.id > this.gameFloor) {
           this.isCurrent = true;
-          this.isWinner = await this.contract.validateCard(this.id);
         }
+
+        this.isWinner = await this.contract.validateCard(this.id);
+        this.winAmount = await this.contract.winners.call(this.id);
 
         this.tokenUrl = await this.contract.tokenURI(this.id);
         response = await fetch(this.tokenUrl);

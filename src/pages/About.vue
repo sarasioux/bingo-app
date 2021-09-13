@@ -121,11 +121,11 @@
                     </div>
                     <div class="panel-block">
                         <label>Chainlink Keeper</label>
-                        <strong style="text-decoration: underline"><a href="https://keepers.chain.link/kovan/upkeeps/530" target="_blank">bingoball8 - 530</a></strong>
+                        <strong style="text-decoration: underline"><a href="https://keepers.chain.link/kovan/upkeeps/599" target="_blank">bingoball9 - 599</a></strong>
                     </div>
                     <div class="panel-block">
                         <label>Subgraph</label>
-                        <strong style="text-decoration: underline"><a href="https://thegraph.com/studio/subgraph/bingo/" target="_blank">bingo v.0.0.9</a></strong>
+                        <strong style="text-decoration: underline"><a href="https://thegraph.com/studio/subgraph/bingo/" target="_blank">bingo v.0.1.4</a></strong>
                     </div>
                     <div class="panel-block">
                         <label>LINK Balance</label>
