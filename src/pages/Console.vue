@@ -53,7 +53,7 @@
                                 </div>
                                 <div class="message-body">
                                     <figure class="image is-square">
-                                        <img :src="'/images/' + patternImgs[pattern]">
+                                        <img :src="'/images/' + patternImgs[pattern]" v-if="pattern">
                                     </figure>
                                     <label class="label has-text-danger has-margin has-text-centered">{{patterns[pattern]}}</label>
                                 </div>
