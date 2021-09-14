@@ -174,7 +174,7 @@
         this.maxCardsPerGame = parseInt(await this.contract.maxCards.call());
         this.gameTokenFloor = parseInt(await this.contract.gameFloor.call());
         this.myEthBalance = Math.round(await this.$web3.eth.getBalance(this.account) / 1e16) / 1e2;
-        this.myWeedBalance = parseInt(await this.weedContract.balanceOf(this.account)) / 1e18;
+        this.myWeedBalance = Math.round(parseInt(await this.weedContract.balanceOf(this.account)) / 1e18);
       },
       myBalance: function() {
         if(this.currencyChoice === 'ETH') {

@@ -71,7 +71,7 @@
                         The prize pool is a percentage of sales, configurable from game to game.
                     </div>
                     <div class="panel-block">
-                        It's possible for more than one card to be a winner, so only the first person to claim bingo wins the prize.
+                        It's possible for more than one card to be a winner, if so the prize will be split across all winning cards for that ball drop.
                     </div>
                     <div class="panel-block">
                         NFT prizes are distributed manually to the wallet address that successfully claims bingo.
@@ -80,7 +80,7 @@
                         The winner will need to pay gas fees to claim bingo, but the prize money will be transferred during that same transaction.
                     </div>
                     <div class="panel-block">
-                        A single complete line wins.
+                        In the event of multiple winners, the NFT prize will go to the first person who claims.
                     </div>
                 </article>
             </div>
@@ -99,7 +99,7 @@
                         Colors in the art are determined using your successful balls matched.
                     </div>
                     <div class="panel-block">
-                        Our hope is that you will enjoy your unique on-chain art as much as you enjoyed playing Bingo.
+                        Our hope is that you will enjoy your unique art as much as you enjoyed playing Bingo.
                     </div>
                 </article>
             </div>
