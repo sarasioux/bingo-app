@@ -203,6 +203,20 @@
           this.account
         );
         this.loadData();
+      },
+      testWinners: async function() {
+        let result = await this.contract.checkForWinners();
+        console.log('test', result);
+      },
+      checkCard: async function() {
+        let result = await this.contract.validateCard.call(1);
+        console.log('check card', result);
+
+        result = await this.contract.generateCard.call(1);
+        console.log('generate card', result);
+
+        result = parseInt(await this.contract.cardRandomness.call(1));
+        console.log('random', result);
       }
     }
   }

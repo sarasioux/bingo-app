@@ -2,7 +2,7 @@
     <div class="form">
         <div class="columns is-gapless has-text-centered is-mobile half-margin-bottom">
             <div class="column">
-                <span class="title is-5 has-text-danger">{{maxCardsPerGame - (currentTokenId - gameTokenFloor)}}</span>
+                <span class="title is-5 has-text-danger" v-if="maxCardsPerGame">{{maxCardsPerGame - (currentTokenId - gameTokenFloor)}}</span>
                 <label class="label is-small">Remaining</label>
             </div>
             <div class="column">
@@ -138,6 +138,7 @@
           this.showMintEthModal = true;
           try {
             await this.contract.mintCard(this.mintAmount, {gasPrice: null, value: this.mintAmount * this.pricePerCard * 1e18, from: this.account, type: '0x2'});
+            //await this.contract.mintCard(this.mintAmount, {gasPrice: null, value: this.mintAmount * this.pricePerCard * 1e18, from: this.account});
             this.showMintEthModal = false;
             this.showMintSuccess = true;
             this.mintAmount = '';

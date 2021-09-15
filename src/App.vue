@@ -181,10 +181,17 @@ export default {
                 this.connectionInProgress = false;
                 this.isConnected = true;
                 break;
+            case 5777:
+                document.cookie = "connected=true";
+                await this.initContracts();
+                this.connectionInProgress = false;
+                this.isConnected = true;
+                break;
             default:
                 alert('Please connect to the Kovan test network.');
         }
       } catch (error) {
+        console.log(error);
         this.showHelp = true;
       }
     },
@@ -199,7 +206,7 @@ export default {
       contract = TruffleContract(WeedContract);
       contract.setProvider(this.$web3.currentProvider);
       contract.defaults({
-        from: this.account
+        from: this.account,
       });
       this.weedContract = await contract.deployed();
 
@@ -234,26 +241,11 @@ export default {
       setTimeout(this.timeUntilDraw, 1000);
     },
     queryGraph: async function() {
-      const APIURL = "https://api.studio.thegraph.com/query/4841/bingo/v0.1.6";
+      const APIURL = "https://api.studio.thegraph.com/query/4841/bingo/v0.1.7";
       this.graphClient = createClient({
         url: APIURL,
         requestPolicy: 'network-only'
       });
-
-    /*
-      const tokensQuery = `
-        query {
-            token(id: 1) {
-                id
-                game {
-                    id
-                }
-            }
-        }
-        `;
-      const data = await client.query(tokensQuery).toPromise();
-      console.log('graph data', data);
-      */
     }
   }
 }
