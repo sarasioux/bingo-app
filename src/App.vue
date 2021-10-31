@@ -241,7 +241,7 @@ export default {
       setTimeout(this.timeUntilDraw, 1000);
     },
     queryGraph: async function() {
-      const APIURL = "https://api.studio.thegraph.com/query/4841/bingo/v0.1.7";
+      const APIURL = "https://api.studio.thegraph.com/query/4841/bingo/v1.0.0";
       this.graphClient = createClient({
         url: APIURL,
         requestPolicy: 'network-only'
