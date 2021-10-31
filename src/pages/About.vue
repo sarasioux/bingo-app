@@ -125,7 +125,7 @@
                     </div>
                     <div class="panel-block">
                         <label>Subgraph</label>
-                        <strong style="text-decoration: underline"><a href="https://thegraph.com/studio/subgraph/bingo/" target="_blank">bingo v.0.1.4</a></strong>
+                        <strong style="text-decoration: underline"><a href="https://thegraph.com/studio/subgraph/bingo/" target="_blank">bingo v.0.1.7</a></strong>
                     </div>
                     <div class="panel-block">
                         <label>LINK Balance</label>

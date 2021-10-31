@@ -154,7 +154,7 @@
         this.minCardsPerGame = parseInt(await this.contract.minCards.call());
         this.gameTokenFloor = parseInt(await this.contract.gameFloor.call());
 
-        if(this.currentTokenId - this.gameTokenFloor > this.minCardsPerGame) {
+        if(this.currentTokenId - this.gameTokenFloor >= this.minCardsPerGame) {
           this.gameStarted = true;
         }
       },

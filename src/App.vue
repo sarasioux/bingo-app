@@ -5,7 +5,7 @@
     <div class="bingo section" style="padding: 1em">
         <div class="columns is-gapless no-margin">
             <div class="column nav-col">
-                <h1 class="tagline title has-text-white has-text-centered is-4">The world's first<br />blockchain-based bingo.</h1>
+                <h1 class="tagline title has-text-white has-text-centered is-4">The world's first<br />blockchain bingo.</h1>
             </div>
             <div class="column is-2">
                 <router-link to="/" @click="cardSelection">
@@ -175,7 +175,7 @@ export default {
         this.account = accounts.result[0];
         let networkId = await this.$web3.eth.net.getId();
         switch (networkId) {
-            case 42:
+            case 1:
                 document.cookie = "connected=true";
                 await this.initContracts();
                 this.connectionInProgress = false;
@@ -188,7 +188,7 @@ export default {
                 this.isConnected = true;
                 break;
             default:
-                alert('Please connect to the Kovan test network.');
+                alert('Please connect to the Main network.');
         }
       } catch (error) {
         console.log(error);

@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="card">
+        <div class="card" :class="{'has-background-warning':isWinner}">
             <div class="card-image">
                 <figure class="image is-square" v-if="image && !loading">
                     <img :src="image">
@@ -12,13 +12,10 @@
                 </p>
             </div>
             <footer class="card-footer">
-                <div class="card-footer-item" v-if="isWinner && type === 'current'">
-                    <a @click="claimBingo" class="button is-fullwidth is-small is-danger">Claim Bingo</a><br />
-                </div>
-                <div class="card-footer-item" v-if="!isWinner">
+                <div class="card-footer-item">
                     #{{id}}
                 </div>
-                <div class="card-footer-item" v-if="!isWinner">
+                <div class="card-footer-item">
                     <a @click="loadCard"><span class="icon pull-right is-small"><i class="fas fa-sync-alt"></i></span></a>
                 </div>
             </footer>
