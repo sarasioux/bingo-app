@@ -230,7 +230,7 @@
 
           ];
 
-          let linkAddress = '0xa36085F69e2889c224210F603D836748e7dC0088';
+          let linkAddress = '0x514910771AF9Ca656af840dff83E8264EcF986CA';
           let link = new this.$web3.eth.Contract(minABI, linkAddress);
           this.linkBalance = parseInt(await link.methods.balanceOf(this.contract.address).call()) / 1e18;
         }
